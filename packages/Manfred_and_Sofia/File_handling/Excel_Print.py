@@ -81,7 +81,7 @@ def Write_Patient_Data(Patient_List, out_path):
                 cohortData[2][key] += df["metionin"][value-1]
                 cohortData[3][key] += df["resterande"][value-1]
         ###_Headers______
-        worksheet.write(0, 0, "Cohort", head_style2)
+        worksheet.write(0, 0, "Karakteristik", head_style2)
         worksheet.write(0, 1, "FDG", head_style2)
         worksheet.write(0, 3, "metionin", head_style2)
         worksheet.write(0, 5, "resterande", head_style2)
