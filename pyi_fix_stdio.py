@@ -26,3 +26,7 @@ if sys.stdout is None:
 if sys.stdin is None:
     sys.stdin = open(os.devnull, "r")
     sys.__stdin__ = sys.stdin
+
+    if sys.stdin is None:
+        sys.stdin = open(os.devnull, "r", encoding="utf-8")
+        sys.__stdin__ = sys.stdin
