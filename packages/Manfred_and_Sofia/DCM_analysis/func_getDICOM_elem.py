@@ -58,11 +58,12 @@ def getBasics(modfir=0, modlas=0):
             temp["Alternativ"] = (" ".join([temp["Alternativ"],str(int(modlas[0x00091038].value)),"MBq"]))
         
 
-        if 'MAC' in modfir.SeriesDescription and (0x000910BB) in modfir or (0x000910BB) in modlas : 
+        if 'MAC' in modfir.SeriesDescription and ((0x000910BB) in modfir or (0x000910BB) in modlas) : 
             temp["Alternativ"] = (" ".join([temp["Alternativ"],
                 str(int(_privGetBasics(["0x000910BB"],modfir,modlas))),"mm"]))
+        if 'NAC' in modfir.SeriesDescription :
+            temp["Alternativ"] = (" ".join([temp["Alternativ"],"NAC"]))
 
-    
     else : 
 
         # BRAVO / CUBE / PROP
