@@ -231,5 +231,5 @@ def Write_Patient_Data(Patient_List, out_path):
                                                     det.get(col))
                                     colInt += 1
                             worksheet.write(0, 5, "Vikt", cf_1)
-                            worksheet.write(1, 5, det.get("Vikt"))
+                            worksheet.write(1, 5, det.get("Weight"))
                     worksheet.autofit()
