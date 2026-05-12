@@ -35,6 +35,7 @@ import shlex
 import signal
 import sys
 import time
+import bids_validator
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -347,12 +348,83 @@ def ensure_python_dependencies() -> None:
 
 def find_executable(name: str) -> Optional[str]:
     """
-    Letar efter ett körbart program i systemets PATH.
-
-    Returnerar sökvägen om programmet hittas, annars None.
+    Letar efter ett körbart program först i PATH, sedan i PyInstaller-bundlen.
     """
 
-    return shutil.which(name)
+    found = shutil.which(name)
+    if found:
+        return found
+
+    names = (name,)
+
+    if os.name == "nt" and not name.lower().endswith(".exe"):
+        names = (name, name + ".exe")
+
+    return find_bundled_executable(names)
+
+def find_bundled_executable(names: Tuple[str, ...]) -> Optional[str]:
+    """
+    Letar efter ett externt program som PyInstaller har packat med,
+    t.ex. deno eller dcm2niix.
+    """
+
+    candidate_dirs: List[Path] = []
+
+    if getattr(sys, "frozen", False):
+        exe_dir = Path(sys.executable).resolve().parent
+
+        candidate_dirs.extend([
+            exe_dir,
+            exe_dir.parent / "Frameworks",
+            exe_dir.parent / "Resources",
+        ])
+
+        meipass = getattr(sys, "_MEIPASS", None)
+        if meipass:
+            meipass_path = Path(meipass).resolve()
+            candidate_dirs.extend([
+                meipass_path,
+                meipass_path / "bin",
+                meipass_path.parent / "Frameworks",
+                meipass_path.parent / "Resources",
+            ])
+
+    candidate_dirs.append(Path.cwd())
+
+    seen = set()
+    unique_dirs = []
+
+    for folder in candidate_dirs:
+        try:
+            folder = folder.resolve()
+        except Exception:
+            continue
+
+        if folder in seen:
+            continue
+
+        seen.add(folder)
+
+        if folder.exists() and folder.is_dir():
+            unique_dirs.append(folder)
+
+    for folder in unique_dirs:
+        for name in names:
+            candidate = folder / name
+            if is_executable_file(candidate):
+                return str(candidate)
+
+    # Extra fallback: sök rekursivt i appens närmaste mappar.
+    for folder in unique_dirs:
+        for name in names:
+            try:
+                for candidate in folder.rglob(name):
+                    if is_executable_file(candidate):
+                        return str(candidate)
+            except Exception:
+                pass
+
+    return None
 
 
 def load_app_config() -> Dict[str, Any]:
@@ -2688,9 +2760,15 @@ def build_bids_validator_command(
         deno = find_executable("deno")
 
         if deno is None:
-            deno_candidate = Path.home() / ".deno" / "bin" / "deno"
-            if deno_candidate.exists():
-                deno = str(deno_candidate)
+            deno_candidates = [
+                Path.home() / ".deno" / "bin" / "deno",
+                Path("/opt/anaconda3/envs/BIDS_and_coreg/bin/deno"),
+            ]
+
+            for deno_candidate in deno_candidates:
+                if is_executable_file(deno_candidate):
+                    deno = str(deno_candidate)
+                    break
 
         if deno is None:
             raise RuntimeError(
@@ -4442,15 +4520,6 @@ class CoregBatchApp(tk.Tk):
         main.columnconfigure(1, weight=1)
         main.rowconfigure(7, weight=1)
 
-        ###______Style (ta bort om det inte funkar)_____________________________
-        # Available on all platform: alt, clam, classic, default
-        # Windows: vista, winnative, xpnative
-        # Mac: aqua
-        style = ttk.Style(main)
-        # Set the theme with the theme_use method
-        style.theme_use('alt')  # put the theme name here, that you want to use
-        ###_____________________________________________________________________
-
         ttk.Label(
             main,
             text=APP_TITLE,
@@ -4659,15 +4728,6 @@ class CoregBatchApp(tk.Tk):
         main.pack(fill="both", expand=True)
         main.columnconfigure(1, weight=1)
         main.rowconfigure(8, weight=1)
-
-        ###______Style (ta bort om det inte funkar)_____________________________
-        # Available on all platform: alt, clam, classic, default
-        # Windows: vista, winnative, xpnative
-        # Mac: aqua
-        style = ttk.Style(main)
-        # Set the theme with the theme_use method
-        style.theme_use('alt')  # put the theme name here, that you want to use
-        ###_____________________________________________________________________
 
         ttk.Label(
             main,

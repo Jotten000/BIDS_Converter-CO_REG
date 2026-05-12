@@ -10,12 +10,6 @@ XlsxWriter
 (Manfred använder env_KEX)
 pydicom (v 2.4)           Läsa DICOM-filer        (pydicom, openssl, conda, ca-certificates)
         "pip install pydicom"
-            
-dcm2niix
-    https://github.com/rordenlab/dcm2niix
-    installation: "conda install -c conda-forge dcm2niix"
-
-    instruktioner: https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage#General_Usage
 
 pigz
     parrallel implementation of GZip. Kan användas av dcm2niix förr att göra det snabbare
@@ -37,10 +31,16 @@ Pyinstaller
     https://pypi.org/project/pyinstaller/
     https://pyinstaller.org/en/v4.1/usage.html
 
-pydicom
-"conda install -c conda-forge pydicom"
-
-
 
 Hemsida för icons:
     https://redketchup.io/icon-converter
+
+
+    curl -Ls https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/getfsl.sh | sh -s
+
+    conda install -c conda-forge deno
+
+    pip install pillow
+
+
+    pip install alla i Elliots kod högst upp
