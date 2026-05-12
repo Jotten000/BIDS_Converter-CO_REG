@@ -35,6 +35,7 @@ import shlex
 import signal
 import sys
 import time
+import bids_validator
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
