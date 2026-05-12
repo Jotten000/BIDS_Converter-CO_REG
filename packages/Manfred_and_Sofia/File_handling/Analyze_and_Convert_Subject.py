@@ -251,7 +251,8 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                                     str(temp_BIDS_Path),
                                     str(FolderPaths)]
                             
-                            tempSubPros = subprocess.Popen(strst)
+                            tempSubPros = subprocess.Popen(strst,
+                                                           creationflags=subprocess.CREATE_NO_WINDOW)
                             Threads_Active_subprocess.append(tempSubPros)
                         else:
                             ### Exports .nii
@@ -267,7 +268,8 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                                     str(temp_BIDS_Path),
                                     str(FolderPaths)]
                             
-                            tempSubPros = subprocess.Popen(strst)
+                            tempSubPros = subprocess.Popen(strst,
+                                                           creationflags=subprocess.CREATE_NO_WINDOW)
                             Threads_Active_subprocess.append(tempSubPros)
                         temp_Found_Empty_Thread = True
                         update_status("Converting to bids | Started conversion nr: " 

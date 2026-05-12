@@ -4388,7 +4388,7 @@ class CoregBatchApp(tk.Tk):
             messagebox.showwarning("Körning pågår", "Byt inte UI medan programmet kör.")
             return
 
-        self.current_view = "new"
+        self.current_view = "BIDS_convers"
         self._clear_current_ui()
         self._build_BIDS_Converter()
 
@@ -4420,6 +4420,8 @@ class CoregBatchApp(tk.Tk):
         )
         if path:
             self.other_group_output_dir.set(path)
+            if self.current_view == "BIDS_convers":
+                self.refresh_session_choices()
 
     def break_bids_converter(self):
         """Changes the break variable for converter program\n
