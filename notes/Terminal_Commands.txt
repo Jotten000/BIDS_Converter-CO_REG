@@ -5,6 +5,8 @@
 
             # To activate this environment, use
             #    $ conda activate BIDS_and_coreg
+            # to activat linux environment
+            #    $ conda activate BIDS_and_coreg_linux
             # To deactivate an active environment, use
             #     $ conda deactivate
 

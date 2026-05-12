@@ -114,22 +114,19 @@ def Write_Patient_Data(Patient_List, out_path):
                     worksheet.write(value, 2, f"({0:06.2f}%)")
                 else:
                     worksheet.write(value, 2,
-                        f"({(cohortData[1]
-                             .get(key)/amount_FDG)*100:06.2f}%)")
+                        f"({(cohortData[1].get(key)/amount_FDG)*100:06.2f}%)")
                 worksheet.write(value, 3, cohortData[2].get(key))
                 if amount_met == 0:
                     worksheet.write(value, 4, f"({0:06.2f}%)")
                 else:
                     worksheet.write(value, 4,
-                        f"({(cohortData[2]
-                             .get(key)/amount_met)*100:06.2f}%)")
+                        f"({(cohortData[2].get(key)/amount_met)*100:06.2f}%)")
                 worksheet.write(value, 5, cohortData[3].get(key))
                 if amount_rest == 0:
                     worksheet.write(value, 6, f"({0:06.2f}%)")
                 else:
                     worksheet.write(value, 6,
-                        f"({(cohortData[3]
-                             .get(key)/amount_rest)*100:06.2f}%)")         
+                        f"({(cohortData[3].get(key)/amount_rest)*100:06.2f}%)")         
         # ###_Add_Borders____________________
         # border_style = book.add_format({"Border"      :  2,
         #                                 'border_color': 'black'})
