@@ -124,8 +124,6 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
         tempBool = False
 
         ### ______File validation__________________________________
-        ### A new version that is less rigorous but has better
-        ### performance. Change back if performance is not needed
         for x in Paths.iterdir():
             if x.suffix == ".dcm" or x.suffix == ".img":
                 tempFileListLog.append(x)
