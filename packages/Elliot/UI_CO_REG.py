@@ -4273,7 +4273,7 @@ class CoregBatchApp(tk.Tk):
         """
         Initierar huvudfönstret, Tkinter-variabler, trådhantering och startvyn.
 
-        Här skapas även kön som används för kommunikation mellan worker-trådar
+        Här skapas även kön som används för kommunikation mellan worker-trådarF
         och GUI-tråden.
         """
 
@@ -5788,6 +5788,7 @@ class CoregBatchApp(tk.Tk):
 
         path = filedialog.askdirectory(
             title = "Välj rotmappen som innehåller sub-*/ses-*",
+            initialdir = "/mnt/c/Users"
             )
 
         if path:
