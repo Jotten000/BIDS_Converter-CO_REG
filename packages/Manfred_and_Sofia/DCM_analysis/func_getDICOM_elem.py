@@ -42,9 +42,19 @@ def getBasics(modfir=0, modlas=0):
         temp["Avbildning"] = (" ".join([temp["Avbildning"],
             _privGetBasics(["Radiopharmaceutical","0x00091036"],
                           modfir,modlas)]))
-        temp["Alternativ"] = (" ".join([temp["Alternativ"],
-            str(int(_privGetBasics(["RadionuclideTotalDose"],
-                                  modfir,modlas))),"Bq"]))
+        #temp["Alternativ"] = (" ".join([temp["Alternativ"],
+        #    str(int(_privGetBasics(["RadionuclideTotalDose"],
+        #                          modfir,modlas))),"Bq"]))
+        
+        if 'RadionuclideTotalDose' in modfir :
+            temp["Alternativ"] = (" ".join([temp["Alternativ"],str(int(modfir.RadionuclideTotalDose)),"Bq"]))
+        elif (0x00091038) in modfir : 
+            temp["Alternativ"] = (" ".join([temp["Alternativ"],str(int(modfir[0x00091038].value)),"MBq"]))
+        elif 'RadionuclideTotalDose' in modlas :
+            temp["Alternativ"] = (" ".join([temp["Alternativ"],str(int(modlas.RadionuclideTotalDose)),"Bq"]))
+        elif (0x00091038) in modlas : 
+            temp["Alternativ"] = (" ".join([temp["Alternativ"],str(int(modlas[0x00091038].value)),"MBq"]))
+        
         
         if 'MAC' in modfir.SeriesDescription and (0x000910BB) in modfir or (0x000910BB) in modlas : 
             temp["Alternativ"] = (" ".join([temp["Alternativ"],
