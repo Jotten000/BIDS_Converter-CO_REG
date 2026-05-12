@@ -37,23 +37,35 @@ Sofia:
 
 
 Elliot:
-pyinstaller `
-  --collect-datas bidsschematools `
-  --add-data "C:\Users\ellio\anaconda3\Lib\site-packages\ci_info\vendors.json;ci_info" `
-  --collect-datas etelemetry `
-  --add-binary "C:\Users\ellio\anaconda3\envs\BIDS_and_coreg\Library\bin\dcm2niix.exe;." `
-  --onedir `
-  --windowed `
-  --runtime-hook ".\pyi_fix_stdio.py" `
-  --clean `
-  --name "Bids_and_coreg" `
-  --icon "Prel_BIDS_icon.ico" `
-  main.py
+  windows:
+    pyinstaller `
+      --collect-datas bidsschematools `
+      --add-data "C:\Users\ellio\anaconda3\Lib\site-packages\ci_info\vendors.json;ci_info" `
+      --collect-datas etelemetry `
+      --add-binary "C:\Users\ellio\anaconda3\envs\BIDS_and_coreg\Library\bin\dcm2niix.exe;." `
+      --onedir `
+      --windowed `
+      --runtime-hook ".\pyi_fix_stdio.py" `
+      --clean `
+      --name "Bids_and_coreg" `
+      --icon "Prel_BIDS_icon.ico" `
+      main.py
 
 pyinstaller --collect-datas bidsschematools --add-data "C:\Users\ellio\anaconda3\Lib\site-packages\ci_info\vendors.json:ci_info" --collect-datas etelemetry --add-binary "C:\Users\ellio\anaconda3\envs\BIDS_and_coreg\Library\bin\dcm2niix.exe:." --onedir --windowed --clean --name "Bids_and_coreg" --icon=Prel_BIDS_icon.ico main.py
 "C:\Users\ellio\anaconda3\Lib\site-packages\ci_info\vendors.json"
 C:\Users\ellio\anaconda3\Library\bin\dcm2niix.exe
 
+
+  Linux: 
+    python -m PyInstaller \
+    --collect-datas bidsschematools \
+    --collect-datas etelemetry \
+    --add-binary "$(which dcm2niix):." \
+    --onedir \
+    --runtime-hook ./pyi_fix_stdio.py \
+    --clean \
+    --name "Bids_and_coreg_linux" \
+    main.py
 
 No such file or directory: '/Users/.......app/Contents/Frameworks/ci_info/vendors.json'
 

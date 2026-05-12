@@ -311,9 +311,7 @@ class RuntimeControl:
 def get_available_cpu_count() -> int:
     """
     Returnerar antal tillgängliga logiska CPU-kärnor.
-    os.cpu_count() kan returnera None, så vi faller tillbaka till 1.
     """
-
     return os.cpu_count() or 1
 
 
@@ -321,26 +319,38 @@ def get_recommended_worker_count() -> int:
     """
     Rekommenderar antal parallella workers.
 
-    För coregistrering är det ofta bättre att lämna minst en CPU-kärna fri,
-    eftersom FSL och systemet annars kan bli långsamt.
+    På stora servrar vill vi inte automatiskt använda alla cores,
+    eftersom varje worker kan starta tunga FSL-processer och belasta RAM/disk.
     """
-
     cores = get_available_cpu_count()
 
     if cores <= 2:
         return 1
+    if cores <= 8:
+        return max(1, cores - 1)
+    if cores <= 32:
+        return min(cores - 2, 16)
+    if cores <= 64:
+        return 24
 
-    return min(cores - 1, 4)
+    # För 100+ cores: bra konservativ default
+    return 32
 
 
 def get_worker_options(max_cores: Optional[int] = None) -> Tuple[str, ...]:
     """
-    Skapar val till comboboxen baserat på hur många CPU-kärnor datorn har.
+    Skapar dropdown-värden baserat på antal CPU-kärnor.
+
+    Inkluderar även höga värden för maskiner med 100+ cores.
     """
-    
     cores = max_cores or get_available_cpu_count()
 
-    base_values = (1, 2, 4, 6, 8, 16, 24, 32, 48, 64, 80, 96, 128)
+    base_values = (
+        1, 2, 4, 6, 8,
+        12, 16, 24, 32,
+        48, 64, 80, 96,
+        128, 160, 192, 224, 256
+    )
 
     values = sorted({
         value for value in base_values
@@ -348,7 +358,6 @@ def get_worker_options(max_cores: Optional[int] = None) -> Tuple[str, ...]:
     } | {cores})
 
     return tuple(str(value) for value in values)
-
 
 def is_nifti_file(path: str) -> bool:
     """
@@ -4241,7 +4250,8 @@ class CoregBatchApp(tk.Tk):
         self.cpu_info_text = tk.StringVar(
             value=(
                 f"Tillgängliga CPU-kärnor: {self.available_cpu_cores}. "
-                f"Rekommenderat: {self.recommended_cpu_workers}."
+                #f"Rekommenderad start: {self.recommended_cpu_workers} workers. "
+                #"Öka vid behov om RAM och disk klarar det."
             )
         )
 
