@@ -230,6 +230,7 @@ def Write_Patient_Data(Patient_List, out_path):
                                     worksheet.write(rowInt, colInt, 
                                                     det.get(col))
                                     colInt += 1
-                            worksheet.write(0, 5, "Vikt", cf_1)
-                            worksheet.write(1, 5, det.get("Weight"))
+                            if not det.get("Weight") == None:
+                                worksheet.write(0, 5, "Vikt", cf_1)
+                                worksheet.write(1, 5, det.get("Weight"))
                     worksheet.autofit()

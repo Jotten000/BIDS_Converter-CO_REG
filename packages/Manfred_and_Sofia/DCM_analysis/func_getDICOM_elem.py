@@ -62,7 +62,6 @@ def getBasics(modfir=0, modlas=0):
             temp["Alternativ"] = (" ".join([temp["Alternativ"],
                 str(int(_privGetBasics(["0x000910BB"],modfir,modlas))),"mm"]))
 
-
     
     else : 
 
