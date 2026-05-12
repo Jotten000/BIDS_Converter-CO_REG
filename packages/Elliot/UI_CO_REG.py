@@ -4522,6 +4522,14 @@ class CoregBatchApp(tk.Tk):
         main.columnconfigure(1, weight=1)
         main.rowconfigure(7, weight=1)
 
+        ###___Styles________________________________
+        ### Available on all platform: alt, clam, classic, default
+        # Create a style
+        style = ttk.Style(main)
+        # Set the theme with the theme_use method
+        style.theme_use('default')  # put the theme name here, that you want to use
+        ###_________________________________________
+
         ttk.Label(
             main,
             text=APP_TITLE,
@@ -4731,6 +4739,14 @@ class CoregBatchApp(tk.Tk):
         main.columnconfigure(1, weight=1)
         main.rowconfigure(8, weight=1)
 
+        ###___Styles________________________________
+        ### Available on all platform: alt, clam, classic, default
+        # Create a style
+        style = ttk.Style(main)
+        # Set the theme with the theme_use method
+        style.theme_use('default')  # put the theme name here, that you want to use
+        ###_________________________________________
+
         ttk.Label(
             main,
             text="BIDS Convertering",
@@ -4803,7 +4819,7 @@ class CoregBatchApp(tk.Tk):
             value=True
         ).grid(row=1,column=1,columnspan=2,padx=10,sticky="w")
 
-        self.ifzipN = tk.Radiobutton(
+        self.ifzipN = ttk.Radiobutton(
             other_options_frame,
             text = "N",
             variable=self.YN,
@@ -4822,14 +4838,13 @@ class CoregBatchApp(tk.Tk):
             value=True
         ).grid(row=2,column=1,columnspan=2,padx=10,sticky="w")
 
-        self.if_Run_Name_N = tk.Radiobutton(
+        self.if_Run_Name_N = ttk.Radiobutton(
             other_options_frame,
             text = "N",
             variable=self.Run_in_name_bool,
             value=False
         ).grid(row=2,column=2,columnspan=3,padx=10,sticky="w")
 
-        ###_____________________________________________
         ttk.Label(
             other_options_frame,
             text="'Försäkra om filer är dcm'"
@@ -4842,13 +4857,13 @@ class CoregBatchApp(tk.Tk):
             value=True
         ).grid(row=3,column=1,columnspan=2,padx=10,sticky="w")
 
-        self.if_Run_Name_N = tk.Radiobutton(
+        self.if_Run_Name_N = ttk.Radiobutton(
             other_options_frame,
             text = "N",
             variable=self.guarantee_dcm,
             value=False
         ).grid(row=3,column=2,columnspan=3,padx=10,sticky="w")
-        ###_____________________________________________
+
         ttk.Button(
             main,
             text="Run",
