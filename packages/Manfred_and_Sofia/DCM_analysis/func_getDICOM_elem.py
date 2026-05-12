@@ -1,5 +1,5 @@
 
-#import func_getWhichMod
+
 from packages.Manfred_and_Sofia.DCM_analysis import func_getWhichMod
 
 """Alla funktioner i filen tar ett dicom-objekt (FileDataset) som input, och 
@@ -7,7 +7,6 @@ ger en patientspecifik eller modulspecifik dict() som output, värden som ej
 finns med returneras som False ifall ingen input skickas, returneras en lista 
 med parametrar som läses från dicom-objektet"""
 
-# Använder
 def getNamePersNr(mod=0):
     """input dicom-objekt, output dict() personnummer, datum för bildtagning, 
     kön, vikt, ifall ingen input returneras lista m. parametrar för 
@@ -47,12 +46,14 @@ def getBasics(modfir=0, modlas=0):
             str(int(_privGetBasics(["RadionuclideTotalDose"],
                                   modfir,modlas))),"Bq"]))
         
-        if 'MAC' in modfir.SeriesDescription : 
+        if 'MAC' in modfir.SeriesDescription and (0x000910BB) in modfir or (0x000910BB) in modlas : 
             temp["Alternativ"] = (" ".join([temp["Alternativ"],
                 str(int(_privGetBasics(["0x000910BB"],modfir,modlas))),"mm"]))
             
         if 'PatientWeight' in modfir and 'NAC' in modfir.SeriesDescription : 
-            temp.update({"Vikt":" ".join([str(int(modfir.PatientWeight)),"kg"])})
+            temp.update({"Weight":" ".join([str(int(modfir.PatientWeight)),"kg"])})
+
+        print("temp for PET",temp)
     
     else : 
 

@@ -53,9 +53,7 @@ def getWhole(mod, runIndex, ifRun):
             tst.append("DYN")
         if 'FS' in mod.ScanOptions:
             tst.append("FS")
-        #if ('FILTERED_GEMS' in mod.ScanOptions 
-        #    and 'PROP' not in mod[0x0019109C].value.upper()):
-        #    tst.append("FILTEREDGEM")
+            
         if len(tst) > 0:
             entities.update({"acq":"+".join(tst)})
         
