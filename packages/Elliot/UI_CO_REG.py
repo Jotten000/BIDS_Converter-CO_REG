@@ -4117,6 +4117,10 @@ class CoregBatchApp(tk.Tk):
         self.Breaking_Converter_Program = False
         self.Run_in_name_bool = tk.BooleanVar(value=False)
         self.guarantee_dcm = tk.BooleanVar(value=True)
+        self.YN = tk.BooleanVar(value=True)
+        self.other_status_text = tk.StringVar(
+            value="Välj rotmapp med DICOM-filer, välj map där BIDS-struktur önskas, och tryck Run."
+        )
         ###________________________________
 
         self._build_menu()
@@ -4370,14 +4374,14 @@ class CoregBatchApp(tk.Tk):
     def run_bids_converter(self) -> None:
         """Starts a new thread with the converter program 
         if one is not currently running. Then waits for the 
-        thread to join and opens it upp for activation\n
+        thread to join and opens it upp for activation\n 
         Group 13"""
         if self.Convert_Thread_Active == False:
             self.Convert_Thread_Active = True
             self.Breaking_Converter_Program = False
             self.set_busy_convert(self.Convert_Thread_Active)
             self.Convert_Thread = threading.Thread(
-                    target=Convert_Handler.prepAndConvert,
+                    target=Conversion_Handler.prepAndConvert,
                     args=(
                         Path(self.other_group_root_dir.get().strip()),
                         Path(self.other_group_output_dir.get().strip()),
@@ -4649,15 +4653,16 @@ class CoregBatchApp(tk.Tk):
 
         ttk.Label(
             main,
-            text="Ny UI",
+            text="BIDS Convertering",
             font=("Segoe UI", 16, "bold"),
         ).grid(row=0, column=0, columnspan=3, sticky="w", pady=(0, 12))
 
         ttk.Label(
             main,
             text=(
-                "Den här UI:n är reserverad för den andra gruppen.\n"
-                "Fälten och Run-knappen finns bara som placeholder."
+                ("Välj en rootmapp, programmet kommer att leta efter all"
+                "\nmappar som innehåller endast dicom filer")
+
             ),
             wraplength=1040,
             justify="left",
@@ -4747,7 +4752,7 @@ class CoregBatchApp(tk.Tk):
         ###_____________________________________________
         ttk.Label(
             other_options_frame,
-            text="'Försökra om filer är dcm'"
+            text="'Försäkra om filer är dcm'"
         ).grid(row=3,column=0,sticky="w", pady=(10,10),padx=10)
 
         self.if_Run_Name_Y = ttk.Radiobutton(
@@ -6173,6 +6178,6 @@ class CoregBatchApp(tk.Tk):
             ))
 
 def start():
-    if __name__ == "__main__":
+    # if __name__ == "__main__":
         app = CoregBatchApp()
         app.mainloop()

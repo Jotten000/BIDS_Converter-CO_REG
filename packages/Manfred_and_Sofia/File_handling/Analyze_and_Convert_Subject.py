@@ -86,7 +86,7 @@ def create_BIDS_path(Sub_tag_str, Ses_tag_str, target_dcm,
                     / str(DataType_tag))
     return path_BIDS
 
-def iterate_Patient_Folders(Patient_Path , Output_Path, 
+def iterate_Patient_Folders(Patient_Path , Output_Path,
                             Sub_List, Number_of_threads, 
                             zippIt, name_run, CheckDCM, update_status, Print_func, 
                             is_killed):

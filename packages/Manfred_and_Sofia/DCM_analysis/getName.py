@@ -13,7 +13,7 @@ def getWhole(mod, runIndex, ifRun):
 
     if mod.Modality == 'PT':
         if 'NAC' in mod.SeriesDescription : 
-            entities = dict({"rec":"None"})
+            return dict({"rec":"None"})
 
         else :
             nots = ["DECY","DTIM","RANSNG","DCAL","SLSENS","NORM"]
@@ -32,8 +32,8 @@ def getWhole(mod, runIndex, ifRun):
             elif 'mm' in mod.SeriesDescription : 
                 istot = ("".join([istot,"".join([mod.SeriesDescription
                                 [mod.SeriesDescription.find("mm")-1],"mm"])]))
-            
-        return dict({"rec":istot[1:],"run":str(runIndex)})
+      
+            return dict({"rec":istot[1:],"run":str(runIndex)})
     
     elif modtype == 'anat':
         entities = dict()
