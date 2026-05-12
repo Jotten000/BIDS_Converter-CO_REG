@@ -45,7 +45,7 @@ def getBasics(modfir=0, modlas=0):
                           modfir,modlas)]))
         temp["Options"] = (" ".join([temp["Options"],
             str(int(_privGetBasics(["RadionuclideTotalDose"],
-                                  modfir,modlas))),"Bq/μmol"]))
+                                  modfir,modlas))),"Bq"]))
         
         if 'MAC' in modfir.SeriesDescription : 
             temp["Options"] = (" ".join([temp["Options"],
