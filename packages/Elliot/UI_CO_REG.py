@@ -2823,7 +2823,7 @@ def run_tracked_command(command: str, work_dir: str, runtime: RuntimeControl) ->
 
     return output or ""
 
-
+###____________Works in terminal______________________________________
 # def build_bids_validator_command(
 #     root_dir: Path,
 #     prune_derivatives: bool = True,
@@ -2889,6 +2889,9 @@ def run_tracked_command(command: str, work_dir: str, runtime: RuntimeControl) ->
 #     cmd.append(str(root_dir))
 
 #     return cmd
+###_______________________________________________________________________
+
+###___Works in app________________________________________________________
 def build_bids_validator_command(
     root_dir: Path,
     prune_derivatives: bool = True,
@@ -2933,7 +2936,7 @@ def build_bids_validator_command(
     cmd.append(str(root_dir))
 
     return cmd
-
+###________________________________________________________________________
 
 def run_bids_validator(
     root_dir: Path,
@@ -5775,9 +5778,7 @@ class CoregBatchApp(tk.Tk):
 
         path = filedialog.askdirectory(
             title = "Välj rotmappen som innehåller sub-*/ses-*",
-            initialdir = "/mnt/c/Users/ellio/Documents/Kandidat/pacient data",
-            #initialdir = "/mnt/c/Users/Jotten/OneDrive/Dokument/KTH/Kandidat Arbete/Coregistrering och spatial normalisering av multimodala PETMRI-data/data/patcient data",
-        )
+            )
 
         if path:
             self.root_dir.set(path)
