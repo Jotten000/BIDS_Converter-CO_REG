@@ -37,6 +37,10 @@ Pyinstaller
     https://pypi.org/project/pyinstaller/
     https://pyinstaller.org/en/v4.1/usage.html
 
+pydicom
+"conda install -c conda-forge pydicom"
+
+
 
 Hemsida för icons:
     https://redketchup.io/icon-converter
