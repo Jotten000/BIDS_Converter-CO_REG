@@ -2,8 +2,7 @@
 from pathlib import Path
 from pydicom import dcmread
 
-from BIDS_Program import func_getWhichMod
-#import func_getWhichMod
+from packages.Manfred_and_Sofia.DCM_analysis import func_getWhichMod
 
 def getWhole(mod, runIndex, ifRun):
     """input dicom-objekt, 

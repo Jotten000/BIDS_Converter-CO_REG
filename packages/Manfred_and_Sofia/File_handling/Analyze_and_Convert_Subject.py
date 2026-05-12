@@ -8,9 +8,9 @@ import sys
 import bids_validator
 import time
 import pigz_python
-from BIDS_Program.func_getWhichMod import getMod, getDatatype, getIfAccept
-from BIDS_Program.func_getDICOM_elem import getBasics
-from BIDS_Program.getName import getFileName
+from packages.Manfred_and_Sofia.DCM_analysis.func_getWhichMod import getMod, getDatatype, getIfAccept
+from packages.Manfred_and_Sofia.DCM_analysis.func_getDICOM_elem import getBasics
+from packages.Manfred_and_Sofia.DCM_analysis.getName import getFileName
 
 def unique_Name(sub_tag_str, ses_tag_str, file_path, dicom_file,
                 run_in_name, Target_Folder, Print_Func):
@@ -124,8 +124,6 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
         tempBool = False
 
         ### ______File validation__________________________________
-        ### A new version that is less rigorous but has better
-        ### performance. Change back if performance is not needed
         for x in Paths.iterdir():
             if x.suffix == ".dcm" or x.suffix == ".img":
                 tempFileListLog.append(x)

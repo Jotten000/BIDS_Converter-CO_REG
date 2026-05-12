@@ -1,4 +1,4 @@
-from BIDS_Program import func_getWhichMod
+from packages.Manfred_and_Sofia.DCM_analysis import func_getWhichMod
 def getCohort(hms) : 
     """input dicom-objekt, output dict m. vilken modalitet är True"""
 
