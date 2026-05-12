@@ -308,6 +308,45 @@ class RuntimeControl:
                     pass
 
 
+def get_available_cpu_count() -> int:
+    """
+    Returnerar antal tillgängliga logiska CPU-kärnor.
+    os.cpu_count() kan returnera None, så vi faller tillbaka till 1.
+    """
+    return os.cpu_count() or 1
+
+
+def get_recommended_worker_count() -> int:
+    """
+    Rekommenderar antal parallella workers.
+
+    För coregistrering är det ofta bättre att lämna minst en CPU-kärna fri,
+    eftersom FSL och systemet annars kan bli långsamt.
+    """
+    cores = get_available_cpu_count()
+
+    if cores <= 2:
+        return 1
+
+    return min(cores - 1, 4)
+
+
+def get_worker_options(max_cores: Optional[int] = None) -> Tuple[str, ...]:
+    """
+    Skapar val till comboboxen baserat på hur många CPU-kärnor datorn har.
+    """
+    cores = max_cores or get_available_cpu_count()
+
+    base_values = (1, 2, 4, 6, 8, 16, 24, 32, 48, 64, 80, 96, 128)
+
+    values = sorted({
+        value for value in base_values
+        if value <= cores
+    } | {cores})
+
+    return tuple(str(value) for value in values)
+
+
 def is_nifti_file(path: str) -> bool:
     """
     Kontrollerar om en fil är en NIfTI-fil, antingen .nii eller .nii.gz.
@@ -4189,7 +4228,20 @@ class CoregBatchApp(tk.Tk):
 
         self.protocol("WM_DELETE_WINDOW", self.request_exit)
 
-        self.max_workers_var = tk.StringVar(value="2")
+        self.available_cpu_cores = get_available_cpu_count()
+        self.recommended_cpu_workers = get_recommended_worker_count()
+        self.worker_options = get_worker_options(self.available_cpu_cores)
+
+        self.max_workers_var = tk.StringVar(value=str(self.recommended_cpu_workers))
+        self.converter_workers_var = tk.StringVar(value=str(self.recommended_cpu_workers))
+
+        self.cpu_info_text = tk.StringVar(
+            value=(
+                f"Tillgängliga CPU-kärnor: {self.available_cpu_cores}. "
+                f"Rekommenderat: {self.recommended_cpu_workers}."
+            )
+        )
+
         self.max_workers_combo = None
 
         self.root_dir = tk.StringVar()
@@ -4609,7 +4661,9 @@ class CoregBatchApp(tk.Tk):
         options_frame.columnconfigure(2, weight=1)
         options_frame.columnconfigure(3, weight=1)
 
-        ttk.Label(options_frame, text="Parallella Trådar: ").grid(row=1, column=0, sticky="w", pady=(10, 0))
+        ttk.Label(options_frame, text="Parallella workers:").grid(
+            row=1, column=0, sticky="w", pady=(10, 0)
+        )
 
         self.run_t2_check = ttk.Checkbutton(
             options_frame,
@@ -4656,11 +4710,16 @@ class CoregBatchApp(tk.Tk):
         self.max_workers_combo = ttk.Combobox(
             options_frame,
             textvariable=self.max_workers_var,
-            values=("1", "2", "4", "6", "8", "16", "32", "48", "64", "80", "96", "128"),
+            values=self.worker_options,
             state="readonly",
             width=8,
         )
         self.max_workers_combo.grid(row=1, column=1, sticky="w", pady=(10, 0))
+
+        ttk.Label(
+            options_frame,
+            textvariable=self.cpu_info_text,
+        ).grid(row=1, column=2, columnspan=2, sticky="w", pady=(10, 0))
 
         ttk.Label(options_frame, text="Diffusion cost:").grid(
             row=2, column=0, sticky="w", pady=(10, 0)
@@ -4851,12 +4910,17 @@ class CoregBatchApp(tk.Tk):
 
         self.comob = ttk.Combobox(
             other_options_frame,
-            values=("1","2","4","6","8","16","24","32","48","64", "80", "96","128"),
-            width=8, 
+            textvariable=self.converter_workers_var,
+            values=self.worker_options,
+            width=8,
             state="readonly",
         )
-        self.comob.current(1)
-        self.comob.grid(row=0,column=1,sticky="w",padx=10)
+        self.comob.grid(row=0, column=1, sticky="w", padx=10)
+
+        ttk.Label(
+            other_options_frame,
+            textvariable=self.cpu_info_text,
+        ).grid(row=0, column=2, columnspan=3, sticky="w", padx=10)
 
         ttk.Label(
             other_options_frame,
@@ -5683,7 +5747,8 @@ class CoregBatchApp(tk.Tk):
         self.perfusion_cost_var.set(DEFAULT_PERFUSION_COST)
         self.other_group_root_dir.set("")
         self.other_group_output_dir.set("")
-        self.max_workers_var.set("2")
+        self.max_workers_var.set(str(self.recommended_cpu_workers))
+        self.converter_workers_var.set(str(self.recommended_cpu_workers))
 
         self.status_text.set("Välj rotmappen som innehåller sub-*/ses-* och tryck Run.")
         self.current_item_text.set("Ingen körning aktiv.")
