@@ -4800,7 +4800,7 @@ class CoregBatchApp(tk.Tk):
 
         ttk.Label(
             main,
-            text="BIDS Convertering",
+            text="BIDS konvertering",
             font=("Segoe UI", 16, "bold"),
         ).grid(row=0, column=0, columnspan=3, sticky="w", pady=(0, 12))
 
@@ -4846,7 +4846,7 @@ class CoregBatchApp(tk.Tk):
 
         ttk.Label(
             other_options_frame,
-            text="Parallella cores:"
+            text="Parallella kärnor:"
         ).grid(row=0,column=0,sticky="w",pady=(10,15),padx=10)
 
         self.comob = ttk.Combobox(
