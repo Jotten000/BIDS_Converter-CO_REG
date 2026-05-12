@@ -2,6 +2,8 @@
 Använder 3.14.2
 Anaconda
 
+conda install -n BIDS_and_coreg -c conda-forge 
+
 
 XlsxWriter
     pip install XlsxWriter
@@ -10,6 +12,12 @@ XlsxWriter
 (Manfred använder env_KEX)
 pydicom (v 2.4)           Läsa DICOM-filer        (pydicom, openssl, conda, ca-certificates)
         "pip install pydicom"
+                    
+dcm2niix
+    https://github.com/rordenlab/dcm2niix
+    installation: "conda install -c conda-forge dcm2niix"
+
+    instruktioner: https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage#General_Usage
 
 pigz
     parrallel implementation of GZip. Kan användas av dcm2niix förr att göra det snabbare
@@ -41,6 +49,8 @@ Hemsida för icons:
     conda install -c conda-forge deno
 
     pip install pillow
+
+    pip install ci_info
 
 
     pip install alla i Elliots kod högst upp

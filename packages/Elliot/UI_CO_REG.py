@@ -35,7 +35,6 @@ import shlex
 import signal
 import sys
 import time
-import bids_validator
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -517,6 +516,36 @@ def find_executable_in_folder(folder: Path, names: Tuple[str, ...]) -> Optional[
     return None
 
 
+def running_on_windows() -> bool:
+    """
+    True om programmet körs nativt på Windows.
+
+    OBS: WSL räknas inte som Windows här, eftersom os.name då normalt är 'posix'.
+    """
+    return os.name == "nt" or sys.platform.startswith("win")
+
+
+WINDOWS_FSL_DISABLED_MESSAGE = (
+    "Programmet körs nativt i Windows.\n\n"
+    "FSL/FSLeyes är därför avstängt i denna version.\n"
+    "Programmet kommer inte fråga efter FSL-sökväg, och det går inte att öppna "
+    "NIfTI-bilder i FSL från Windows-läget.\n\n"
+    "Kör programmet i WSL, Linux eller macOS om du vill använda FSL-coregistrering "
+    "eller öppna bilder i FSLeyes."
+)
+
+
+def raise_if_windows_fsl_feature(feature_name: str) -> None:
+    """
+    Stoppar funktioner som kräver FSL/FSLeyes när programmet körs på Windows.
+    """
+    if running_on_windows():
+        raise RuntimeError(
+            f"{feature_name} kräver FSL/FSLeyes och är avstängt när programmet körs nativt i Windows.\n\n"
+            "Kör programmet i WSL, Linux eller macOS för den funktionen."
+        )
+
+
 def configure_fsl_from_flirt(flirt_path: Path) -> None:
     """
     Ställer in miljön så att FSL-kommandon fungerar.
@@ -731,8 +760,14 @@ def ensure_fsl_available_gui(parent: tk.Misc) -> str:
     Säkerställer att FSL/flirt finns.
 
     Om FSL hittas automatiskt används det.
+
     Annars får användaren välja FSL, och valet sparas för framtida körningar.
+
+    Om programmet körs nativt på Windows frågar vi inte efter FSL.
     """
+    if running_on_windows():
+        raise RuntimeError(WINDOWS_FSL_DISABLED_MESSAGE)
+
     flirt_path = discover_fsl_flirt()
 
     if flirt_path is None:
@@ -748,7 +783,6 @@ def ensure_fsl_available_gui(parent: tk.Misc) -> str:
         remember_fsl_flirt_path(selected)
         flirt_path = selected
 
-    # Extra säkerhetskontroll: efter konfiguration ska flirt kunna hittas i PATH.
     if shutil.which("flirt") is None and shutil.which("flirt.exe") is None:
         raise RuntimeError(
             "FSL/flirt valdes, men kommandot kunde ändå inte hittas i PATH.\n\n"
@@ -764,6 +798,9 @@ def ensure_fsl_available() -> None:
     Icke-GUI-version. Används om FSL behöver kontrolleras utanför Tkinter.
     """
 
+    if running_on_windows():
+        raise RuntimeError(WINDOWS_FSL_DISABLED_MESSAGE)
+
     flirt_path = discover_fsl_flirt()
 
     if flirt_path is None:
@@ -778,7 +815,11 @@ def find_fsl_viewer_executable() -> Optional[str]:
     Letar efter en installerad FSL-bildvisare.
 
     Söker först i PATH. Om FSL har sparats internt söker den även i FSL:s bin-mapp.
+    På Windows returneras None direkt.
     """
+
+    if running_on_windows():
+        return None
 
     for name in FSL_VIEWER_NAMES:
         exe = find_executable(name)
@@ -798,7 +839,6 @@ def find_fsl_viewer_executable() -> Optional[str]:
         if viewer is not None:
             return str(viewer)
 
-    # Om flirt hittas nu kan dess bin-mapp innehålla fsleyes/fslview.
     flirt_path = discover_fsl_flirt()
     if flirt_path is not None:
         viewer = find_executable_in_folder(flirt_path.parent, FSL_VIEWER_NAMES)
@@ -806,6 +846,7 @@ def find_fsl_viewer_executable() -> Optional[str]:
             return str(viewer)
 
     return None
+
 
 def read_text_file(path: str) -> str:
     """
@@ -4142,6 +4183,9 @@ class CoregBatchApp(tk.Tk):
         self.close_when_done = False
         self.runtime_control: Optional[RuntimeControl] = None
         self.executor: Optional[ThreadPoolExecutor] = None
+        self.busy_progress_convert = None
+        self.other_log_widget = None
+        self.comob = None
 
         self.protocol("WM_DELETE_WINDOW", self.request_exit)
 
@@ -4388,7 +4432,7 @@ class CoregBatchApp(tk.Tk):
             messagebox.showwarning("Körning pågår", "Byt inte UI medan programmet kör.")
             return
 
-        self.current_view = "new"
+        self.current_view = "BIDS_convers"
         self._clear_current_ui()
         self._build_BIDS_Converter()
 
@@ -4420,6 +4464,8 @@ class CoregBatchApp(tk.Tk):
         )
         if path:
             self.other_group_output_dir.set(path)
+            if self.current_view == "BIDS_convers":
+                self.refresh_session_choices()
 
     def break_bids_converter(self):
         """Changes the break variable for converter program\n
@@ -4519,6 +4565,14 @@ class CoregBatchApp(tk.Tk):
         main.pack(fill="both", expand=True)
         main.columnconfigure(1, weight=1)
         main.rowconfigure(7, weight=1)
+
+        ###___Styles________________________________
+        ### Available on all platform: alt, clam, classic, default
+        # Create a style
+        style = ttk.Style(main)
+        # Set the theme with the theme_use method
+        style.theme_use('default')  # put the theme name here, that you want to use
+        ###_________________________________________
 
         ttk.Label(
             main,
@@ -4729,6 +4783,14 @@ class CoregBatchApp(tk.Tk):
         main.columnconfigure(1, weight=1)
         main.rowconfigure(8, weight=1)
 
+        ###___Styles________________________________
+        ### Available on all platform: alt, clam, classic, default
+        # Create a style
+        style = ttk.Style(main)
+        # Set the theme with the theme_use method
+        style.theme_use('default')  # put the theme name here, that you want to use
+        ###_________________________________________
+
         ttk.Label(
             main,
             text="BIDS konvertering",
@@ -4801,7 +4863,7 @@ class CoregBatchApp(tk.Tk):
             value=True
         ).grid(row=1,column=1,columnspan=2,padx=10,sticky="w")
 
-        self.ifzipN = tk.Radiobutton(
+        self.ifzipN = ttk.Radiobutton(
             other_options_frame,
             text = "N",
             variable=self.YN,
@@ -4820,14 +4882,13 @@ class CoregBatchApp(tk.Tk):
             value=True
         ).grid(row=2,column=1,columnspan=2,padx=10,sticky="w")
 
-        self.if_Run_Name_N = tk.Radiobutton(
+        self.if_Run_Name_N = ttk.Radiobutton(
             other_options_frame,
             text = "N",
             variable=self.Run_in_name_bool,
             value=False
         ).grid(row=2,column=2,columnspan=3,padx=10,sticky="w")
 
-        ###_____________________________________________
         ttk.Label(
             other_options_frame,
             text="'Försäkra om filer är dcm'"
@@ -4840,13 +4901,13 @@ class CoregBatchApp(tk.Tk):
             value=True
         ).grid(row=3,column=1,columnspan=2,padx=10,sticky="w")
 
-        self.if_Run_Name_N = tk.Radiobutton(
+        self.if_Run_Name_N = ttk.Radiobutton(
             other_options_frame,
             text = "N",
             variable=self.guarantee_dcm,
             value=False
         ).grid(row=3,column=2,columnspan=3,padx=10,sticky="w")
-        ###_____________________________________________
+
         ttk.Button(
             main,
             text="Run",
@@ -4962,7 +5023,11 @@ class CoregBatchApp(tk.Tk):
 
         self._safe_configure(self.refresh_sessions_button, state="normal")
         self._safe_configure(self.session_combo, state="readonly" if has_sessions else "disabled")
-        self._safe_configure(self.open_session_button, state="normal" if has_sessions else "disabled")
+        can_open_in_fsl = has_sessions and not running_on_windows()
+        self._safe_configure(
+            self.open_session_button,
+            state="normal" if can_open_in_fsl else "disabled"
+        )
 
     def set_session_choices(self, items: List[Tuple[str, str]]) -> None:
         """
@@ -5029,8 +5094,17 @@ class CoregBatchApp(tk.Tk):
 
     def select_fsl_manually(self) -> None:
         """
-        Låter användaren välja eller ändra sparad FSL/flirt-sökväg manuellt.
+        Låter användaren välja eller ändra sparad FSL/flirt-sökväg manuellt. Låter användaren välja eller ändra sparad FSL/flirt-sökväg manuellt.
         """
+
+        if running_on_windows():
+            self.status_text.set("FSL är avstängt när programmet körs nativt i Windows.")
+            messagebox.showinfo(
+                "FSL avstängt på Windows",
+                WINDOWS_FSL_DISABLED_MESSAGE,
+                parent=self,
+            )
+            return
 
         if self.is_running:
             messagebox.showwarning(
@@ -5427,7 +5501,19 @@ class CoregBatchApp(tk.Tk):
         Öppnar befintliga checkerboard-QC-filer för vald session i FSL.
 
         Om filerna saknas får användaren möjlighet att skapa dem först.
+        På Windows är öppning i FSL avstängd.
         """
+
+        if running_on_windows():
+            self.status_text.set(
+                "Kan inte öppna checkerboard-QC i FSL när programmet körs nativt i Windows."
+            )
+            messagebox.showinfo(
+                "Öppning i FSL avstängd",
+                WINDOWS_FSL_DISABLED_MESSAGE,
+                parent=self,
+            )
+            return
 
         try:
             root_path, session_path, selection = self.validate_checkerboard_selection()
@@ -5476,12 +5562,25 @@ class CoregBatchApp(tk.Tk):
 
         except Exception as exc:
             self.status_text.set(f"Fel vid öppning av checkerboard QC: {exc}")
-            messagebox.showerror("Error", f"{exc}\n\nDetaljer:\n{traceback.format_exc()}")
+            messagebox.showerror(
+                "Error",
+                f"{exc}\n\nDetaljer:\n{traceback.format_exc()}"
+            )
+        
 
     def open_selected_session_in_fsl(self) -> None:
         """
         Öppnar T1-referensen och coregistrerade filer för vald session i FSL.
         """
+
+        if running_on_windows():
+            self.status_text.set("Kan inte öppna NIfTI-bilder i FSL när programmet körs nativt i Windows.")
+            messagebox.showinfo(
+                "Öppning i FSL avstängd",
+                WINDOWS_FSL_DISABLED_MESSAGE,
+                parent=self,
+            )
+            return
 
         selection = self.session_choice.get().strip()
         session_path_str = self.session_map.get(selection, "")
@@ -5600,7 +5699,10 @@ class CoregBatchApp(tk.Tk):
 
         Funktionen kontrollerar Python-beroenden, FSL och att rotmappen finns.
         """
-        
+
+        if running_on_windows():
+            raise RuntimeError(WINDOWS_FSL_DISABLED_MESSAGE)
+
         ensure_python_dependencies()
         flirt_path = ensure_fsl_available_gui(self)
         self.log(f"FSL flirt: {flirt_path}")
@@ -5616,7 +5718,6 @@ class CoregBatchApp(tk.Tk):
             raise NotADirectoryError(root)
 
         return root_path
-
     def process_ui_queue(self) -> None:
         """
         Läser statusmeddelanden från worker-trådar och uppdaterar GUI:t.
@@ -5733,43 +5834,55 @@ class CoregBatchApp(tk.Tk):
                         self.log("")
                     self.log("")
 
-                    answer = messagebox.askyesno(
-                        "Checkerboard QC klar",
-                        "Checkerboard QC skapad.\n\n"
-                        f"Antal filer: {len(checkerboard_files)}\n\n"
-                        "Vill du öppna dem i FSL nu?"
-                    )
+                    if running_on_windows():
+                        self.status_text.set(
+                            "Checkerboard QC skapades, men öppning i FSL är avstängd på Windows."
+                        )
+                        messagebox.showinfo(
+                            "Checkerboard QC klar",
+                            "Checkerboard QC skapades.\n\n"
+                            f"Antal filer: {len(checkerboard_files)}\n\n"
+                            "Programmet körs nativt på Windows, så bilderna öppnas inte i FSL.",
+                            parent=self,
+                        )
+                    else:
+                        answer = messagebox.askyesno(
+                            "Checkerboard QC klar",
+                            "Checkerboard QC skapad.\n\n"
+                            f"Antal filer: {len(checkerboard_files)}\n\n"
+                            "Vill du öppna dem i FSL nu?"
+                        )
 
-                    if answer:
-                        try:
-                            viewer = find_fsl_viewer_executable()
-                            if viewer is None:
-                                raise RuntimeError(
-                                    "Hittade ingen FSL-visare. Testade: fsleyes, "
-                                    "fslview_deprecated, fslview."
+                        if answer:
+                            try:
+                                viewer = find_fsl_viewer_executable()
+                                if viewer is None:
+                                    raise RuntimeError(
+                                        "Hittade ingen FSL-visare. Testade: fsleyes, "
+                                        "fslview_deprecated, fslview."
+                                    )
+
+                                files_to_open = []
+
+                                if reference_file:
+                                    files_to_open.append(str(reference_file))
+
+                                files_to_open.extend(str(p) for p in checkerboard_files)
+
+                                subprocess.Popen([viewer] + files_to_open)
+
+                                self.status_text.set(
+                                    f"Öppnade checkerboard QC i FSL för {selection}."
                                 )
 
-                            files_to_open = []
-
-                            if reference_file:
-                                files_to_open.append(str(reference_file))
-
-                            files_to_open.extend(str(p) for p in checkerboard_files)
-
-                            subprocess.Popen([viewer] + files_to_open)
-
-                            self.status_text.set(
-                                f"Öppnade checkerboard QC i FSL för {selection}."
-                            )
-
-                        except Exception as exc:
-                            self.status_text.set(
-                                f"Checkerboard skapades, men kunde inte öppnas i FSL: {exc}"
-                            )
-                            messagebox.showerror(
-                                "FSL error",
-                                f"{exc}\n\nDetaljer:\n{traceback.format_exc()}"
-                            )
+                            except Exception as exc:
+                                self.status_text.set(
+                                    f"Checkerboard skapades, men kunde inte öppnas i FSL: {exc}"
+                                )
+                                messagebox.showerror(
+                                    "FSL error",
+                                    f"{exc}\n\nDetaljer:\n{traceback.format_exc()}"
+                                )
 
                 elif event_type == "checkerboard_all_done":
                     self.set_controls_running(False)
@@ -6256,6 +6369,9 @@ class CoregBatchApp(tk.Tk):
             ))
 
 def start():
-    # if __name__ == "__main__":
-        app = CoregBatchApp()
-        app.mainloop()
+    app = CoregBatchApp()
+    app.mainloop()
+
+
+if __name__ == "__main__":
+    start()

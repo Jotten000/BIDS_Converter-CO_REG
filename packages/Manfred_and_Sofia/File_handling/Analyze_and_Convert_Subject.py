@@ -227,13 +227,12 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                             r_tas.terminate()
                     if len(Threads_Active_subprocess) <= Number_of_threads:
 
-                        # if getattr(sys, 'frozen', False):
-                        #     base_path = sys._MEIPASS
-                        # else:
-                        #     base_path = os.path.dirname(os.path.abspath(__file__))
+                        if getattr(sys, 'frozen', False):
+                            base_path = sys._MEIPASS
+                        else:
+                            base_path = os.path.dirname(os.path.abspath(__file__))
 
-                        # dcm2niix_path = os.path.join(base_path, "dcm2niix")
-                        dcm2niix_path = "dcm2niix"
+                        dcm2niix_path = os.path.join(base_path, "dcm2niix")
 
                         if zippIt:
                             ### Exports .nii.gz
@@ -251,9 +250,6 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                                     "-o",
                                     str(temp_BIDS_Path),
                                     str(FolderPaths)]
-                            
-                            tempSubPros = subprocess.Popen(strst)
-                            Threads_Active_subprocess.append(tempSubPros)
                         else:
                             ### Exports .nii
                             # strst = " ".join([str(dcm2niix_path), " -ba y","-f",bf_Name,
@@ -268,8 +264,16 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                                     str(temp_BIDS_Path),
                                     str(FolderPaths)]
                             
+                        if sys.platform() == 'win32': ### Windows: in the backround
+                            tempSubPros = subprocess.Popen(strst,
+                                                        creationflags=subprocess.CREATE_NO_WINDOW)
+                        elif sys.platform() == 'darwin': ### Mac: in the background
                             tempSubPros = subprocess.Popen(strst)
-                            Threads_Active_subprocess.append(tempSubPros)
+                        elif sys.platform() == 'linux': ### Linux: in backround
+                            tempSubPros = subprocess.Popen(strst)
+                        else: ### just paranoid
+                            tempSubPros = subprocess.Popen(strst)
+                        Threads_Active_subprocess.append(tempSubPros)
                         temp_Found_Empty_Thread = True
                         update_status("Converting to bids | Started conversion nr: " 
                                     + str(count_Conversions_Started))
