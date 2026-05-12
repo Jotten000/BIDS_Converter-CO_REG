@@ -1,0 +1,20 @@
+
+
+"conda create -n ["name"] python=3.14"
+            conda create -n BIDS_and_coreg python=3.14.2
+
+            # To activate this environment, use
+            #    $ conda activate BIDS_and_coreg
+            # To deactivate an active environment, use
+            #     $ conda deactivate
+
+
+add anaconda path
+        export PATH=$PATH:~/miniconda3/bin
+        In order to initialize after the installation process is done, first run "source <path to conda>/bin/activate" and then run "conda init".
+        source /opt/anaconda3/bin/activate
+
+
+PYinstaller:
+
+pyinstaller --collect-data bidsschematools --add-binary "/opt/anaconda3/envs/BIDS_and_coreg/bin/dcm2niix:." --onedir --windowed --clean --name "Bids_and_coreg" --icon=Prel_BIDS_icon.ico main.py
