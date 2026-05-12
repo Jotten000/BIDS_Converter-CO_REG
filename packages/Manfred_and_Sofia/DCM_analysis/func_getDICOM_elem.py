@@ -53,7 +53,7 @@ def getBasics(modfir=0, modlas=0):
         if 'PatientWeight' in modfir and 'NAC' in modfir.SeriesDescription : 
             temp.update({"Weight":" ".join([str(int(modfir.PatientWeight)),"kg"])})
 
-        print("temp for PET",temp)
+            print("temp for PET",temp)
     
     else : 
 
