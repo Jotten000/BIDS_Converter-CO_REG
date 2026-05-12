@@ -9,9 +9,7 @@ XlsxWriter
 
 (Manfred använder env_KEX)
 pydicom (v 2.4)           Läsa DICOM-filer        (pydicom, openssl, conda, ca-certificates)
-        Compatibility med dicom2nifty
-        "pip install pydicom==2.4.0"
-            avinsttalerar den som finns och laddar ner nya
+        "pip install pydicom"
             
 dcm2niix
     https://github.com/rordenlab/dcm2niix
