@@ -313,6 +313,7 @@ def get_available_cpu_count() -> int:
     Returnerar antal tillgängliga logiska CPU-kärnor.
     os.cpu_count() kan returnera None, så vi faller tillbaka till 1.
     """
+
     return os.cpu_count() or 1
 
 
@@ -323,6 +324,7 @@ def get_recommended_worker_count() -> int:
     För coregistrering är det ofta bättre att lämna minst en CPU-kärna fri,
     eftersom FSL och systemet annars kan bli långsamt.
     """
+
     cores = get_available_cpu_count()
 
     if cores <= 2:
@@ -335,6 +337,7 @@ def get_worker_options(max_cores: Optional[int] = None) -> Tuple[str, ...]:
     """
     Skapar val till comboboxen baserat på hur många CPU-kärnor datorn har.
     """
+    
     cores = max_cores or get_available_cpu_count()
 
     base_values = (1, 2, 4, 6, 8, 16, 24, 32, 48, 64, 80, 96, 128)
