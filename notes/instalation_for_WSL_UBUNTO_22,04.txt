@@ -1,0 +1,252 @@
+INSTALLATION FÖR PYTHON-PROGRAM I WSL UBUNTU 22.04 + VS CODE
+
+Programmet kräver:
+1. Python 3
+2. Tkinter för GUI-fönstret
+3. Python-paketen:
+   - nibabel
+   - numpy
+   - nipype
+   - openpyxl
+4. FSL, eftersom programmet använder:
+   - flirt
+   - fslmerge
+   - fsleyes / fslview
+5. Deno eller bids-validator, eftersom programmet kan köra BIDS Validator
+6. VS Code med Remote - WSL och Python extension
+
+
+============================================================
+1. INSTALLERA GRUNDPAKET I UBUNTU
+============================================================
+
+Kör detta i Ubuntu-terminalen i WSL:
+
+sudo apt update
+sudo apt upgrade -y
+
+sudo apt install -y \
+  python3 \
+  python3-pip \
+  python3-venv \
+  python3-tk \
+  curl \
+  ca-certificates \
+  git \
+  unzip \
+  xdg-utils \
+  libgl1 \
+  libglib2.0-0 \
+  libxkbcommon-x11-0
+
+
+============================================================
+2. SKAPA PYTHON-MILJÖ I PROJEKTMAPPEN
+============================================================
+
+Gå till projektmappen:
+
+cd /path/till/ditt/projekt
+
+Skapa virtuell miljö:
+
+python3 -m venv .venv
+
+Aktivera miljön:
+
+source .venv/bin/activate
+
+Uppgradera pip:
+
+python -m pip install --upgrade pip setuptools wheel
+
+Installera Python-paketen:
+
+pip install nibabel numpy nipype openpyxl
+
+
+============================================================
+3. ALTERNATIVT: ANVÄND requirements.txt
+============================================================
+
+Om du har filen requirements.txt i projektmappen kan du installera allt med:
+
+source .venv/bin/activate
+pip install -r requirements.txt
+
+
+============================================================
+4. INSTALLERA FSL
+============================================================
+
+Kör:
+
+curl -Ls https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/getfsl.sh | sh -s
+
+När installationen är klar:
+- Stäng Ubuntu-terminalen.
+- Öppna Ubuntu-terminalen igen.
+
+Kontrollera sedan:
+
+echo $FSLDIR
+which flirt
+flirt -version
+which fslmerge
+which fsleyes
+
+Det viktigaste är att kommandot flirt fungerar i samma terminal som du kör Python-programmet från.
+
+
+============================================================
+5. INSTALLERA DENO FÖR BIDS VALIDATOR
+============================================================
+
+Installera Deno:
+
+curl -fsSL https://deno.land/install.sh | sh
+
+Lägg till Deno i PATH:
+
+echo 'export DENO_INSTALL="$HOME/.deno"' >> ~/.bashrc
+echo 'export PATH="$DENO_INSTALL/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+Kontrollera:
+
+deno --version
+
+
+============================================================
+6. INSTALLERA BIDS VALIDATOR
+============================================================
+
+Installera BIDS Validator som kommando:
+
+deno install -ERWN -g -n bids-validator jsr:@bids/validator
+
+Kontrollera:
+
+bids-validator --help
+
+Om bids-validator inte hittas men deno fungerar, kan programmet ändå använda Deno direkt.
+
+
+============================================================
+7. TESTA PYTHON-IMPORTER
+============================================================
+
+Aktivera Python-miljön:
+
+source .venv/bin/activate
+
+Kör:
+
+python - <<'PY'
+import tkinter
+import nibabel
+import numpy
+import nipype
+import openpyxl
+from nipype.interfaces import fsl
+
+print("Alla Python-importer fungerar.")
+PY
+
+
+============================================================
+8. TESTA TKINTER-GUI
+============================================================
+
+Kör:
+
+python - <<'PY'
+import tkinter as tk
+
+root = tk.Tk()
+root.title("Tkinter test")
+tk.Label(root, text="Tkinter fungerar i WSL").pack(padx=30, pady=30)
+root.mainloop()
+PY
+
+Om ett litet fönster öppnas fungerar GUI:t.
+
+
+============================================================
+9. ÖPPNA PROJEKTET I VS CODE
+============================================================
+
+Gå till projektmappen:
+
+cd /path/till/ditt/projekt
+
+Öppna VS Code från WSL:
+
+code .
+
+Installera dessa extensions i VS Code:
+- Remote - WSL
+- Python
+
+Välj Python-interpreter:
+
+Ctrl+Shift+P
+Python: Select Interpreter
+Välj: .venv/bin/python
+
+
+============================================================
+10. KÖR PROGRAMMET
+============================================================
+
+Aktivera miljön:
+
+source .venv/bin/activate
+
+Kör programmet:
+
+python ditt_program.py
+
+
+============================================================
+11. SNABB KONTROLLISTA
+============================================================
+
+Kör:
+
+python --version
+python -c "import tkinter, nibabel, numpy, nipype, openpyxl; print('Python OK')"
+
+which flirt
+flirt -version
+
+which fslmerge
+which fsleyes
+
+which bids-validator || which deno
+
+
+============================================================
+12. VANLIGA FEL
+============================================================
+
+Fel: ModuleNotFoundError: No module named 'nibabel'
+Lösning:
+source .venv/bin/activate
+pip install nibabel numpy nipype openpyxl
+
+Fel: FSL verkar inte vara installerat eller flirt finns inte i PATH
+Lösning:
+Kontrollera:
+which flirt
+echo $FSLDIR
+
+Om inget visas behöver FSL installeras eller terminalen startas om.
+
+Fel: no display name and no $DISPLAY environment variable
+Lösning:
+GUI fungerar bäst med Windows 11 + WSLg. Kontrollera att WSL är uppdaterat.
+
+Fel: bids-validator kunde inte hittas
+Lösning:
+Installera Deno och BIDS Validator enligt steg 5 och 6.
