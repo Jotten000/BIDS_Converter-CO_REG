@@ -4250,9 +4250,16 @@ class CoregBatchApp(tk.Tk):
         self.content_frame = ttk.Frame(self)
         self.content_frame.pack(fill="both", expand=True)
 
-        self.show_coregistrering_ui()
-        self.after(150, self.process_ui_queue)
+        if running_on_windows():
+            self.show_BIDS_Converter()
+            self.other_status_text.set(
+                "Programmet körs i Windows. Coregistrering med FSL är avstängd, därför öppnas BIDS Converter automatiskt."
+            )
+        else:
+            self.show_coregistrering_ui()
 
+        self.after(150, self.process_ui_queue)
+        
     def _build_menu(self) -> None:
         """
         Skapar programmets menyfält.
