@@ -38,3 +38,5 @@ No such file or directory: '/Users/.......app/Contents/Frameworks/ci_info/vendor
 
 --add-binary "/opt/anaconda3/envs/BIDS_and_coreg/bin/deno:."
 which deno
+
+

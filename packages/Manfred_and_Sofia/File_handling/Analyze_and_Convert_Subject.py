@@ -227,13 +227,13 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                             r_tas.terminate()
                     if len(Threads_Active_subprocess) <= Number_of_threads:
 
-                        # if getattr(sys, 'frozen', False):
-                        #     base_path = sys._MEIPASS
-                        # else:
-                        #     base_path = os.path.dirname(os.path.abspath(__file__))
+                        if getattr(sys, 'frozen', False):
+                            base_path = sys._MEIPASS
+                        else:
+                            base_path = os.path.dirname(os.path.abspath(__file__))
 
-                        # dcm2niix_path = os.path.join(base_path, "dcm2niix")
-                        dcm2niix_path = "dcm2niix"
+                        dcm2niix_path = os.path.join(base_path, "dcm2niix")
+                        # dcm2niix_path = "dcm2niix"
 
                         if zippIt:
                             ### Exports .nii.gz
