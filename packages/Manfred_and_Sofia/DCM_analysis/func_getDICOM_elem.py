@@ -33,10 +33,12 @@ def getBasics(modfir=0, modlas=0):
     som ska returneras"""
 
     if modfir == 0 :
-        return ["Modalitet","Avbildning","Alternativ"]
+        return ["Modalitet","Avbildning","Alternativ","Weight"]
     
-    temp = dict({"Modalitet":"","Avbildning":"","Alternativ":""})
+    temp = dict({"Modalitet":"","Avbildning":"","Alternativ":"","Weight":""})
     temp["Modalitet"] = func_getWhichMod.getMod(modfir)
+    if 'PatientWeight' in modfir : 
+        temp.update({"Weight":" ".join([str(int(modfir.PatientWeight)),"kg"])})
     
     if modfir.Modality == 'PT' : 
         temp["Avbildning"] = (" ".join([temp["Avbildning"],
@@ -55,15 +57,12 @@ def getBasics(modfir=0, modlas=0):
         elif (0x00091038) in modlas : 
             temp["Alternativ"] = (" ".join([temp["Alternativ"],str(int(modlas[0x00091038].value)),"MBq"]))
         
-        
+
         if 'MAC' in modfir.SeriesDescription and (0x000910BB) in modfir or (0x000910BB) in modlas : 
             temp["Alternativ"] = (" ".join([temp["Alternativ"],
                 str(int(_privGetBasics(["0x000910BB"],modfir,modlas))),"mm"]))
-            
-        if 'PatientWeight' in modfir and 'NAC' in modfir.SeriesDescription : 
-            temp.update({"Weight":" ".join([str(int(modfir.PatientWeight)),"kg"])})
 
-        print("temp for PET",temp)
+
     
     else : 
 
