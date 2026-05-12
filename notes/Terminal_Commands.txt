@@ -58,14 +58,18 @@ C:\Users\ellio\anaconda3\Library\bin\dcm2niix.exe
 
   Linux: 
     python -m PyInstaller \
-    --collect-datas bidsschematools \
-    --collect-datas etelemetry \
-    --add-binary "$(which dcm2niix):." \
-    --onedir \
-    --runtime-hook ./pyi_fix_stdio.py \
-    --clean \
-    --name "Bids_and_coreg_linux" \
-    main.py
+      --collect-datas bidsschematools \
+      --collect-datas etelemetry \
+      --collect-all openpyxl \
+      --add-data "/home/jotten/miniconda3/envs/BIDS_and_coreg_linux/lib/python3.11/site-packages/ci_info/vendors.json:ci_info" \
+      --add-binary "$(which dcm2niix):." \
+      --add-binary "$CONDA_PREFIX/lib/libexpat.so.1:." \
+      --onedir \
+      --runtime-hook ./pyi_fix_stdio.py \
+      --clean \
+      --name "Bids_and_coreg_linux" \
+      main.py
+
 
 No such file or directory: '/Users/.......app/Contents/Frameworks/ci_info/vendors.json'
 
