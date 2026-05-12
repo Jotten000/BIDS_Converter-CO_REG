@@ -1,0 +1,2 @@
+APPS/Linux/Bids_and_coreg_linux.tar.gz filter=lfs diff=lfs merge=lfs -text
+APPS/Linux/** filter=lfs diff=lfs merge=lfs -text
