@@ -4442,6 +4442,15 @@ class CoregBatchApp(tk.Tk):
         main.columnconfigure(1, weight=1)
         main.rowconfigure(7, weight=1)
 
+        ###______Style (ta bort om det inte funkar)_____________________________
+        # Available on all platform: alt, clam, classic, default
+        # Windows: vista, winnative, xpnative
+        # Mac: aqua
+        style = ttk.Style(main)
+        # Set the theme with the theme_use method
+        style.theme_use('alt')  # put the theme name here, that you want to use
+        ###_____________________________________________________________________
+
         ttk.Label(
             main,
             text=APP_TITLE,
@@ -4650,6 +4659,15 @@ class CoregBatchApp(tk.Tk):
         main.pack(fill="both", expand=True)
         main.columnconfigure(1, weight=1)
         main.rowconfigure(8, weight=1)
+
+        ###______Style (ta bort om det inte funkar)_____________________________
+        # Available on all platform: alt, clam, classic, default
+        # Windows: vista, winnative, xpnative
+        # Mac: aqua
+        style = ttk.Style(main)
+        # Set the theme with the theme_use method
+        style.theme_use('alt')  # put the theme name here, that you want to use
+        ###_____________________________________________________________________
 
         ttk.Label(
             main,

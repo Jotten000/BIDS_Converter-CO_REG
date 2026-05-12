@@ -211,8 +211,8 @@ def Write_Patient_Data(Patient_List, out_path):
                 with book as workbook:
                     worksheet = workbook.add_worksheet("Details table")
                     detai_list = pat.Details_List
-                    column_heads = ["ses_tag"   , "Modality", 
-                                    "Avbildning", "Options" ]
+                    column_heads = ["ses_tag"   , "Modalitet", 
+                                    "Avbildning", "Alternativ" ]
                     cf_1 = book.add_format({'bold':True, 
                                                 'bg_color':'gray'})
                     colInt = 0
@@ -222,7 +222,7 @@ def Write_Patient_Data(Patient_List, out_path):
                     rowInt = 0
                     for head in headers:
                         for det in detai_list:
-                            if (det.get("Modality") == str(head) and
+                            if (det.get("Modalitet") == str(head) and
                                 det.get("ses_tag" ) == str(sestag)):
                                 rowInt += 1
                                 colInt = 0
@@ -231,5 +231,5 @@ def Write_Patient_Data(Patient_List, out_path):
                                                     det.get(col))
                                     colInt += 1
                             worksheet.write(0, 5, "Vikt", cf_1)
-                            worksheet.write(1, 5, det.get("Weight"))
+                            worksheet.write(1, 5, det.get("Vikt"))
                     worksheet.autofit()
