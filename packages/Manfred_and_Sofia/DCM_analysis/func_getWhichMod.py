@@ -4,7 +4,7 @@ def getIfAccept(mod):
     med i BIDS-datan"""
    
     imagetypes = ['SCREEN SAVE','ACMAP','DIXON']
-    seriesdescs = ['UNIVERSAL','SEGMENTATION','PETMR']
+    seriesdescs = ['UNIVERSAL','SEGMENTATION','PETMR','ORIG']
     protcnames = ['DTI FA','IMAGE QC']
         
     if not getNotInkl(imagetypes,'ImageType',mod):
