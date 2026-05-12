@@ -264,12 +264,12 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                                     str(temp_BIDS_Path),
                                     str(FolderPaths)]
                             
-                        if sys.platform() == 'win32': ### Windows: in the backround
+                        if sys.platform == 'win32': ### Windows: in the backround
                             tempSubPros = subprocess.Popen(strst,
                                                         creationflags=subprocess.CREATE_NO_WINDOW)
-                        elif sys.platform() == 'darwin': ### Mac: in the background
+                        elif sys.platform == 'darwin': ### Mac: in the background
                             tempSubPros = subprocess.Popen(strst)
-                        elif sys.platform() == 'linux': ### Linux: in backround
+                        elif sys.platform == 'linux': ### Linux: in backround
                             tempSubPros = subprocess.Popen(strst)
                         else: ### just paranoid
                             tempSubPros = subprocess.Popen(strst)
