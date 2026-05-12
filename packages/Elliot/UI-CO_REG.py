@@ -51,7 +51,6 @@ try:
     import nibabel as nib
 except ImportError:
     nib = None
-
 try:
     import numpy as np
 except ImportError:
@@ -79,6 +78,8 @@ except ImportError:
     Table = None
     TableStyleInfo = None
     Comment = None
+
+from packages.Manfred_and_Sofia.File_handling import Conversion_Handler
 
 
 # Globala inställningar för programmet.
