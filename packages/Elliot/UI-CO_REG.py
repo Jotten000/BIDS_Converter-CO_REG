@@ -4111,6 +4111,13 @@ class CoregBatchApp(tk.Tk):
         self.open_session_button = None
         self.validate_bids_check = None
 
+        ###___Converter Variables_______________
+        self.Convert_Thread_Active = False
+        self.Breaking_Converter_Program = False
+        self.Run_in_name_bool = tk.BooleanVar(value=False)
+        self.guarantee_dcm = tk.BooleanVar(value=True)
+        ###________________________________
+
         self._build_menu()
 
         self.content_frame = ttk.Frame(self)
@@ -4131,7 +4138,7 @@ class CoregBatchApp(tk.Tk):
 
         view_menu = tk.Menu(menubar, tearoff=0)
         view_menu.add_command(label="Coregistrering UI", command=self.show_coregistrering_ui)
-        view_menu.add_command(label="BIDS Converter", command=self.show_BIDS_Conveter)
+        view_menu.add_command(label="BIDS Converter", command=self.show_BIDS_Converter)
         menubar.add_cascade(label="Mode", menu=view_menu)
 
         metrics_menu = tk.Menu(menubar, tearoff=0)
@@ -4289,7 +4296,7 @@ class CoregBatchApp(tk.Tk):
             except Exception:
                 pass
 
-    def show_BIDS_Conveter(self) -> None:
+    def show_BIDS_Converter(self) -> None:
         """
         Visar den alternativa placeholder-vyn för den andra gruppen.
         """
@@ -4300,7 +4307,7 @@ class CoregBatchApp(tk.Tk):
 
         self.current_view = "new"
         self._clear_current_ui()
-        self._build_BIDS_Conveter()
+        self._build_BIDS_Converter()
 
     def select_other_group_root_dir(self) -> None:
         """
@@ -4331,16 +4338,91 @@ class CoregBatchApp(tk.Tk):
         if path:
             self.other_group_output_dir.set(path)
 
-    def run_other_group_placeholder(self) -> None:
-        """
-        Visar information om att den Bids Conveter UI:ns Run-knapp ännu saknar funktion.
-        """
+    def break_bids_converter(self):
+        """Changes the break variable for converter program\n
+        Group 13"""
+        self.Breaking_Converter_Program = True
+        if self.Convert_Thread_Active == True:
+            self.update_other_status_text("Stoppar processen")
 
-        messagebox.showinfo(
-            "BIDS Conveter UI",
-            "Den här Run-knappen är bara en placeholder för den andra gruppen.\n"
-            "Ingen logik är kopplad till den ännu."
-        )
+    def get_broken_state(self):
+        """Return the bool for if the break button has been pressed\n
+        The converter program checks this variable between loops and 
+        breaks internaly if True. This allows quick killing of the program,
+        while still doing the exiting procedures such as waiting for subprocess
+        to close, saving data, and creating tables for what has been done\n
+        Group 13"""
+        return self.Breaking_Converter_Program
+
+    def run_bids_converter_starter(self):
+        """Starts a thread that starts the converter program thread\n
+        I did it this way because i wanted to use .join to set active
+        state to false\n
+        Could be changed, it's not my darling, but as far as i know it 
+        works without problems\n\n
+        Group 13"""
+        if self.Convert_Thread_Active == False:
+            startThread = threading.Thread(target=self.run_bids_converter)
+            startThread.daemon = True
+            startThread.start()
+
+    def run_bids_converter(self) -> None:
+        """Starts a new thread with the converter program 
+        if one is not currently running. Then waits for the 
+        thread to join and opens it upp for activation\n
+        Group 13"""
+        if self.Convert_Thread_Active == False:
+            self.Convert_Thread_Active = True
+            self.Breaking_Converter_Program = False
+            self.set_busy_convert(self.Convert_Thread_Active)
+            self.Convert_Thread = threading.Thread(
+                    target=Convert_Handler.prepAndConvert,
+                    args=(
+                        Path(self.other_group_root_dir.get().strip()),
+                        Path(self.other_group_output_dir.get().strip()),
+                        int(self.comob.get()),
+                        self.YN.get(),
+                        self.Run_in_name_bool.get(),
+                        self.guarantee_dcm.get(),
+                        self.update_other_status_text,
+                        self.update_other_text_box,
+                        self.get_broken_state))
+            self.Convert_Thread.daemon = True
+            self.Convert_Thread.start()
+            self.Convert_Thread.join()
+            self.Convert_Thread_Active = False
+            self.set_busy_convert(self.Convert_Thread_Active)
+            self.Breaking_Converter_Program = False
+
+    def set_busy_convert(self, busy: bool) -> None:
+        """Starts and ends the progressbar animation\n
+        Group 13"""
+        if self._widget_exists(self.busy_progress_convert):
+            if busy == True:
+                self.busy_progress_convert.start()
+
+            elif busy == False:
+                self.busy_progress_convert["value"] = 0
+
+                self.busy_progress_convert.stop()
+
+        self.update_idletasks()
+
+    def update_other_status_text(self,thenewline:str):
+        """Changes the text on the 'ny_ui' status label\n
+        Group 13"""
+        self.other_status_text.set(thenewline)
+
+    def update_other_text_box(self, text:str):
+        """Adds text to the 'ny_ui' text box\n
+        Group 13"""
+        if not self._widget_exists(self.other_log_widget):
+            return
+        self.other_log_widget.configure(state="normal")
+        self.other_log_widget.insert("end", text + "\n")
+        self.other_log_widget.see("end")
+        self.other_log_widget.configure(state="disabled")
+        self.update_idletasks()
 
     def _build_coregistrering_ui(self) -> None:
         """
@@ -4558,18 +4640,15 @@ class CoregBatchApp(tk.Tk):
 
         self.log_widget.configure(yscrollcommand=log_scrollbar.set, state="disabled")
 
-    def _build_BIDS_Conveter(self) -> None:
-        """
-        Bygger placeholder-gränssnittet för den andra gruppens framtida funktion.
-        """
-        
+    def _build_BIDS_Converter(self) -> None:
         main = ttk.Frame(self.content_frame, padding=24)
         main.pack(fill="both", expand=True)
         main.columnconfigure(1, weight=1)
+        main.rowconfigure(8, weight=1)
 
         ttk.Label(
             main,
-            text="BIDS Conveter UI",
+            text="Ny UI",
             font=("Segoe UI", 16, "bold"),
         ).grid(row=0, column=0, columnspan=3, sticky="w", pady=(0, 12))
 
@@ -4603,11 +4682,134 @@ class CoregBatchApp(tk.Tk):
             command=self.select_other_group_output_dir,
         ).grid(row=3, column=2, sticky="ew")
 
+        other_options_frame = ttk.LabelFrame(
+            main,
+            text="Valmöjligheter",
+            padding=10
+        )
+        other_options_frame.grid(row=4,column=0,columnspan=3,sticky="ew",pady=(14,10))
+        other_options_frame.rowconfigure(0,weight=1)
+        other_options_frame.rowconfigure(1,weight=1)
+
+        ttk.Label(
+            other_options_frame,
+            text="Parallella cores:"
+        ).grid(row=0,column=0,sticky="w",pady=(10,15),padx=10)
+
+        self.comob = ttk.Combobox(
+            other_options_frame,
+            values=("1","2","4","6","8","16","24","32","48","64", "80", "96","128"),
+            width=8, 
+            state="readonly",
+        )
+        self.comob.current(1)
+        self.comob.grid(row=0,column=1,sticky="w",padx=10)
+
+        ttk.Label(
+            other_options_frame,
+            text="Komprimera:"
+        ).grid(row=1,column=0,sticky="w", pady=(10,0),padx=10)
+
+        self.ifzipY = ttk.Radiobutton(
+            other_options_frame,
+            text = "Y",
+            variable=self.YN,
+            value=True
+        ).grid(row=1,column=1,columnspan=2,padx=10,sticky="w")
+
+        self.ifzipN = tk.Radiobutton(
+            other_options_frame,
+            text = "N",
+            variable=self.YN,
+            value=False
+        ).grid(row=1,column=2,columnspan=3,padx=10,sticky="w")
+
+        ttk.Label(
+            other_options_frame,
+            text="'run-' i alla filnamn:"
+        ).grid(row=2,column=0,sticky="w", pady=(10,0),padx=10)
+
+        self.if_Run_Name_Y = ttk.Radiobutton(
+            other_options_frame,
+            text = "Y",
+            variable=self.Run_in_name_bool,
+            value=True
+        ).grid(row=2,column=1,columnspan=2,padx=10,sticky="w")
+
+        self.if_Run_Name_N = tk.Radiobutton(
+            other_options_frame,
+            text = "N",
+            variable=self.Run_in_name_bool,
+            value=False
+        ).grid(row=2,column=2,columnspan=3,padx=10,sticky="w")
+
+        ###_____________________________________________
+        ttk.Label(
+            other_options_frame,
+            text="'Försökra om filer är dcm'"
+        ).grid(row=3,column=0,sticky="w", pady=(10,10),padx=10)
+
+        self.if_Run_Name_Y = ttk.Radiobutton(
+            other_options_frame,
+            text = "Y",
+            variable=self.guarantee_dcm,
+            value=True
+        ).grid(row=3,column=1,columnspan=2,padx=10,sticky="w")
+
+        self.if_Run_Name_N = tk.Radiobutton(
+            other_options_frame,
+            text = "N",
+            variable=self.guarantee_dcm,
+            value=False
+        ).grid(row=3,column=2,columnspan=3,padx=10,sticky="w")
+        ###_____________________________________________
         ttk.Button(
             main,
             text="Run",
-            command=self.run_other_group_placeholder,
-        ).grid(row=4, column=0, columnspan=3, sticky="w", pady=(20, 0))
+            command=self.run_bids_converter_starter,
+        ).grid(row=5, column=0, columnspan=1, sticky="w", pady=(10, 0))
+
+        ttk.Button(
+            main,
+            text="Break",
+            command=self.break_bids_converter
+        ).grid(row=5, column=1, columnspan=1, sticky="w", pady=(10, 0))
+
+        ttk.Label(
+            main,
+            text="Pågående konvertering:"
+        ).grid(row=6, column=0, sticky="w", pady=(10, 4))
+
+        self.busy_progress_convert = ttk.Progressbar(
+            main,
+            orient="horizontal",
+            mode="indeterminate"
+        )
+        self.busy_progress_convert.grid(row=7, column=0, columnspan=3, sticky="ew", padx=30, pady=(5,10))
+
+        other_status_box = ttk.LabelFrame(main, text="Status", padding=10)
+        other_status_box.grid(row=8, column=0, columnspan=3, sticky="nsew")
+        other_status_box.columnconfigure(0, weight=1)
+        other_status_box.rowconfigure(1, weight=1)
+
+        ttk.Label(other_status_box, textvariable=self.other_status_text, wraplength=1040).grid(
+            row=0, column=0, sticky="w", pady=(0, 10)
+        )
+
+        other_log_frame = ttk.Frame(other_status_box)
+        other_log_frame.grid(row=1, column=0, sticky="nsew")
+        other_log_frame.columnconfigure(0, weight=1)
+        other_log_frame.rowconfigure(0, weight=1)
+
+        self.other_log_widget = tk.Text(other_log_frame, wrap="word", height=24)
+        self.other_log_widget.grid(row=0, column=0, sticky="nsew")
+
+        other_log_scrollbar = ttk.Scrollbar(other_log_frame, orient="vertical", command=self.other_log_widget.yview)
+        other_log_scrollbar.grid(row=0, column=1, sticky="ns", )
+
+        self.other_log_widget.configure(yscrollcommand=other_log_scrollbar.set, state="disabled")
+        other_log_frame.grid_propagate(True)
+        
 
     def log(self, text: str) -> None:
         """
