@@ -2757,18 +2757,18 @@ def build_bids_validator_command(
     if installed_validator is not None:
         cmd = [installed_validator]
     else:
-    deno = find_executable("deno")
+        deno = find_executable("deno")
 
-    if deno is None:
-        deno_candidates = [
-            Path.home() / ".deno" / "bin" / "deno",
-            Path("/opt/anaconda3/envs/BIDS_and_coreg/bin/deno"),
-        ]
+        if deno is None:
+            deno_candidates = [
+                Path.home() / ".deno" / "bin" / "deno",
+                Path("/opt/anaconda3/envs/BIDS_and_coreg/bin/deno"),
+            ]
 
-        for deno_candidate in deno_candidates:
-            if is_executable_file(deno_candidate):
-                deno = str(deno_candidate)
-                break
+            for deno_candidate in deno_candidates:
+                if is_executable_file(deno_candidate):
+                    deno = str(deno_candidate)
+                    break
 
         if deno is None:
             raise RuntimeError(
@@ -4520,15 +4520,6 @@ class CoregBatchApp(tk.Tk):
         main.columnconfigure(1, weight=1)
         main.rowconfigure(7, weight=1)
 
-        ###______Style (ta bort om det inte funkar)_____________________________
-        # Available on all platform: alt, clam, classic, default
-        # Windows: vista, winnative, xpnative
-        # Mac: aqua
-        style = ttk.Style(main)
-        # Set the theme with the theme_use method
-        style.theme_use('alt')  # put the theme name here, that you want to use
-        ###_____________________________________________________________________
-
         ttk.Label(
             main,
             text=APP_TITLE,
@@ -4737,15 +4728,6 @@ class CoregBatchApp(tk.Tk):
         main.pack(fill="both", expand=True)
         main.columnconfigure(1, weight=1)
         main.rowconfigure(8, weight=1)
-
-        ###______Style (ta bort om det inte funkar)_____________________________
-        # Available on all platform: alt, clam, classic, default
-        # Windows: vista, winnative, xpnative
-        # Mac: aqua
-        style = ttk.Style(main)
-        # Set the theme with the theme_use method
-        style.theme_use('alt')  # put the theme name here, that you want to use
-        ###_____________________________________________________________________
 
         ttk.Label(
             main,
