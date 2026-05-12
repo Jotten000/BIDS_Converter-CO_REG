@@ -83,10 +83,10 @@ class PatientData:
         already added"""
         existsBool = False
         for d in self.Details_List:
-            if (d.get("Modality")   == new_dict.get("Modality")   and
-                d.get("Avbildning") == new_dict.get("Avbildning") and
-                d.get("Options")    == new_dict.get("Options")    and 
-                d.get("ses_tag")    == new_dict.get("ses_tag")    ):
+            if (d.get("Modality")      == new_dict.get("Modality")   and
+                d.get("Avbildning")    == new_dict.get("Avbildning") and
+                d.get("Alternativ")    == new_dict.get("Alternativ") and 
+                d.get("ses_tag")       == new_dict.get("ses_tag")    ):
                 existsBool = True
         if existsBool == False:
             self.Details_List.append(new_dict)
