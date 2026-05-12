@@ -16,8 +16,18 @@ add anaconda path
 
 
 PYinstaller:
-
+Manfred:
 pyinstaller --collect-datas bidsschematools --add-data "/opt/anaconda3/envs/BIDS_and_coreg/lib/python3.14/site-packages/ci_info/vendors.json:ci_info" --collect-datas etelemetry --add-binary "/opt/anaconda3/envs/BIDS_and_coreg/bin/dcm2niix:." --onedir --windowed --clean --name "Bids_and_coreg" --icon=Prel_BIDS_icon.ico main.py
+
+
+Sofia:
+
+
+
+Elliot:
+pyinstaller --collect-datas bidsschematools --add-data "C:\Users\ellio\anaconda3\Lib\site-packages\ci_info\vendors.json" --collect-datas etelemetry --add-binary "C:\Users\ellio\anaconda3\Library\bin\dcm2niix.exe" --onedir --windowed --clean --name "Bids_and_coreg" main.py
+"C:\Users\ellio\anaconda3\Lib\site-packages\ci_info\vendors.json"
+C:\Users\ellio\anaconda3\Library\bin\dcm2niix.exe
 
 
 No such file or directory: '/Users/.......app/Contents/Frameworks/ci_info/vendors.json'
