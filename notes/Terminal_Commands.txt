@@ -17,4 +17,4 @@ add anaconda path
 
 PYinstaller:
 
-pyinstaller --collect-data bidsschematools --add-binary "/opt/anaconda3/envs/BIDS_and_coreg/bin/dcm2niix:." --onedir --windowed --clean --name "Bids_and_coreg" --icon=Prel_BIDS_icon.ico main.py
+pyinstaller --collect-data bidsschematools ci-info  --add-binary "/opt/anaconda3/envs/BIDS_and_coreg/bin/dcm2niix:." --onedir --windowed --clean --name "Bids_and_coreg" --icon=Prel_BIDS_icon.ico main.py
