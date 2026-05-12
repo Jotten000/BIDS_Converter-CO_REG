@@ -233,7 +233,6 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                             base_path = os.path.dirname(os.path.abspath(__file__))
 
                         dcm2niix_path = os.path.join(base_path, "dcm2niix")
-                        # dcm2niix_path = "dcm2niix"
 
                         if zippIt:
                             ### Exports .nii.gz
