@@ -78,7 +78,7 @@ class PatientData:
 
     def Append_Details_List(self, new_dict):
         """Input: dict with keys: 
-        ["Modality","Avbildning","Options","ses_tag", "Weight"].\n
+        ["Modality","Avbildning","Alternativ","ses_tag", "Weight"].\n
         Adds it to the list as long as an identical dict is not 
         already added"""
         existsBool = False
