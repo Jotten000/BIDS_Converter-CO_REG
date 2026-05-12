@@ -1,6 +1,6 @@
-from Manfred_test.Analyze_and_Convert_Subject import iterate_Patient_Folders as Navigate
-from Manfred_test.Kladdpapper.patient_classes import PatientList, PatientData
-from Manfred_test.Excel_things.Formating_excel_nice import Write_Patient_Data
+from packages.Manfred_and_Sofia.File_handling.Analyze_and_Convert_Subject import iterate_Patient_Folders as Navigate
+from packages.Manfred_and_Sofia.File_handling.patient_classes import PatientList, PatientData
+from packages.Manfred_and_Sofia.File_handling.Excel_Print import Write_Patient_Data
 import pathlib
 import pandas
 import json

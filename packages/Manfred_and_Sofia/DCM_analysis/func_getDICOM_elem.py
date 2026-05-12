@@ -1,6 +1,6 @@
 
 #import func_getWhichMod
-from BIDS_Program import func_getWhichMod
+from packages.Manfred_and_Sofia.DCM_analysis import func_getWhichMod
 
 """Alla funktioner i filen tar ett dicom-objekt (FileDataset) som input, och 
 ger en patientspecifik eller modulspecifik dict() som output, värden som ej 

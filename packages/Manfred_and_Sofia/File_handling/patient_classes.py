@@ -110,7 +110,7 @@ class PatientData:
 
 
 class PatientList:
-    import BIDS_Program.func_getCohort_tabell as funcCohort
+    import packages.Manfred_and_Sofia.DCM_analysis.func_getCohort_tabell as funcCohort
 
     def __init__(self):
         self.SubList = []

@@ -6172,7 +6172,7 @@ class CoregBatchApp(tk.Tk):
                 },
             ))
 
-
-if __name__ == "__main__":
-    app = CoregBatchApp()
-    app.mainloop()
+def start():
+    if __name__ == "__main__":
+        app = CoregBatchApp()
+        app.mainloop()

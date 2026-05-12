@@ -4,6 +4,6 @@
             conda create -n BIDS_and_coreg python=3.14.2
 
             # To activate this environment, use
-            #    $ conda activate env_Kex
+            #    $ conda activate BIDS_and_coreg
             # To deactivate an active environment, use
             #     $ conda deactivate
