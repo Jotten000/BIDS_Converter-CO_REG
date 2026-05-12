@@ -14,9 +14,6 @@ def getWhole(mod, runIndex, ifRun):
 
     if mod.Modality == 'PT':
         if 'NAC' in mod.SeriesDescription : 
-            #if ifRun :
-            #    return dict({"rec":"None","run":str(runIndex)})
-            #else : 
             entities = dict({"rec":"None"})
 
         else :
@@ -66,10 +63,6 @@ def getWhole(mod, runIndex, ifRun):
         if 'mm' in mod.SeriesDescription:
             entities.update({"echo":int(mod.EchoTime)})
         
-        #if ifRun :
-        #    entities.update({"run":str(runIndex)})
-        #return entities
-        
     elif modtype == 'mrs':
         entities = dict({"acq":int(mod.SliceThickness)})
         if (modality == 'svs' and ('DX' in mod.SeriesDescription.upper() 
@@ -77,16 +70,9 @@ def getWhole(mod, runIndex, ifRun):
             entities.update({"voi":"Dx"})
         elif modality == 'svs' and 'SIN' in mod.SeriesDescription.upper() : 
             entities.update({"voi":"Sin"})
-        
-        #if ifRun :
-        #    entities.updat({"run":str(runIndex)})
-        #return entities
     
     elif modtype == 'dwi' : 
         entities = dict()
-        #if ifRun:
-        #    entities.update({"run":str(runIndex)})
-        #return entities
     
     elif modtype == 'perf' : 
         entities = dict()

@@ -53,27 +53,5 @@ def getHeaders(header) :
     if header == 'V' : 
         return ["Anat","T1 utan kontrast","T1 med kontrast","T2 utan kontrast","T2 med kontrast","FLAIR","swi","Func","dwi","asl","dsc","dce","cbf","cbv","MS","svs","mrsi"]
 
-#thedict = dict({"Tracer":None,"T1 utan kontrast":False,"T1 med kontrast":False,"T2 utan kontrast":False,"T2 med kontrast":False,"FLAIR":False,"swi":False,"dwi":False,"asl":False,"dsc":False,"dce":False,"cbf":False,"cbv":False})
 
-'''
-def gettotalS(hms) : 
-    """input lista m. dicts för 1 session, output dict m. summering av true"""
-    #print("")
-    finallist = dict({"T1 utan kontrast":False,"T1 med kontrast":False,"T2 utan kontrast":False,"T2 med kontrast":False,"FLAIR":False,"swi":False,"dwi":False,"asl":False,"dsc":False,"dce":False,"cbf":False,"cbv":False})
-    for i in hms:
-        #print("i är en dict")
-        for j in i:
-            #print("j är ett värde")
-            if i[j] == True:
-                finallist[j] = True
-    return finallist
-
-def gettotalTrues(hms) : 
-    """input dict från gettotal, output dict med endast sortering och True"""
-    temp = dict()
-    for i in hms : 
-        if not hms[i] == False : 
-            temp.update({i:hms[i]})
-    return temp
-'''
 
