@@ -29,7 +29,7 @@ Bids Validator
     https://github.com/bids-standard/python-validator
     https://anaconda.org/channels/conda-forge/packages/bids-validator/overview
     
-Pyinstaler
+Pyinstaller
     används för att packetera som exe 
     "pip install pyinstaller"
     "conda install -c conda-forge pyinstaller"
