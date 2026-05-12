@@ -2782,60 +2782,112 @@ def run_tracked_command(command: str, work_dir: str, runtime: RuntimeControl) ->
     return output or ""
 
 
+# def build_bids_validator_command(
+#     root_dir: Path,
+#     prune_derivatives: bool = True,
+# ) -> List[str]:
+#     """
+#     Bygger kommandot för BIDS Validator.
+
+#     Prioritet:
+#     1. Använd installerad bids-validator om den finns i PATH.
+#     2. Annars använd Deno + jsr:@bids/validator.
+#     """
+#     installed_validator = find_executable("bids-validator")
+
+#     if installed_validator is not None:
+#         cmd = [installed_validator]
+#     else:
+#         deno = find_executable("deno")
+
+#         if deno is None:
+#             deno_candidates = [
+#                 Path.home() / ".deno" / "bin" / "deno",
+#                 Path("/opt/anaconda3/envs/BIDS_and_coreg/bin/deno"),
+#             ]
+
+#             for deno_candidate in deno_candidates:
+#                 if is_executable_file(deno_candidate):
+#                     deno = str(deno_candidate)
+#                     break
+
+#         if deno is None:
+#             raise RuntimeError(
+#                 "BIDS Validator kunde inte hittas.\n\n"
+#                 "Installera Deno, till exempel med:\n"
+#                 "  conda install -c conda-forge deno\n\n"
+#                 "Testa sedan i terminalen:\n"
+#                 "  deno run -ERWN jsr:@bids/validator --prune --ignoreWarnings /path/to/bids_dataset"
+#             )
+
+#         ### OBS: Manfred ändrar
+#         if getattr(sys, 'frozen', False):
+#             bundle_dir = Path(sys._MEIPASS)
+#         else:
+#             bundle_dir = Path(__file__).parent
+
+#         deno_path = bundle_dir / "deno"
+
+#         cmd = [
+#             deno_path,
+#             "run",
+#             "-ERWN",
+#             "jsr:@bids/validator",
+#         ]
+
+#     if prune_derivatives:
+#         cmd.append("--prune")
+
+#     # Viktigt: stoppa inte batchen för rekommenderade metadata-varningar.
+#     cmd.append("--ignoreWarnings")
+
+#     # Tar bort ANSI-färgkoder från outputen i Tkinter-rutan.
+#     cmd.append("--no-color")
+
+#     cmd.append(str(root_dir))
+
+#     return cmd
 def build_bids_validator_command(
     root_dir: Path,
     prune_derivatives: bool = True,
 ) -> List[str]:
-    """
-    Bygger kommandot för BIDS Validator.
-
-    Prioritet:
-    1. Använd installerad bids-validator om den finns i PATH.
-    2. Annars använd Deno + jsr:@bids/validator.
-    """
-    installed_validator = find_executable("bids-validator")
-
-    if installed_validator is not None:
-        cmd = [installed_validator]
+    
+    if getattr(sys, "frozen", False):
+        bundle_dir = Path(sys.executable).parent
     else:
-        deno = find_executable("deno")
+        bundle_dir = Path(__file__).parent
 
-        if deno is None:
-            deno_candidates = [
-                Path.home() / ".deno" / "bin" / "deno",
-                Path("/opt/anaconda3/envs/BIDS_and_coreg/bin/deno"),
-            ]
+    # Bundled deno first
+    deno_candidates = [
+        bundle_dir / "deno",
+        Path("/opt/anaconda3/envs/BIDS_and_coreg/bin/deno"),
+        Path.home() / ".deno" / "bin" / "deno",
+    ]
 
-            for deno_candidate in deno_candidates:
-                if is_executable_file(deno_candidate):
-                    deno = str(deno_candidate)
-                    break
+    deno = None
 
-        if deno is None:
-            raise RuntimeError(
-                "BIDS Validator kunde inte hittas.\n\n"
-                "Installera Deno, till exempel med:\n"
-                "  conda install -c conda-forge deno\n\n"
-                "Testa sedan i terminalen:\n"
-                "  deno run -ERWN jsr:@bids/validator --prune --ignoreWarnings /path/to/bids_dataset"
-            )
+    for candidate in deno_candidates:
+        if candidate.exists() and os.access(candidate, os.X_OK):
+            deno = str(candidate)
+            break
 
-        cmd = [
-            deno,
-            "run",
-            "-ERWN",
-            "jsr:@bids/validator",
-        ]
+    if deno is None:
+        raise RuntimeError(
+            "Deno kunde inte hittas."
+        )
+
+    cmd = [
+        deno,
+        "run",
+        "-ERWN",
+        "jsr:@bids/validator",
+    ]
 
     if prune_derivatives:
         cmd.append("--prune")
 
-    # Viktigt: stoppa inte batchen för rekommenderade metadata-varningar.
     cmd.append("--ignoreWarnings")
-
-    # Tar bort ANSI-färgkoder från outputen i Tkinter-rutan.
     cmd.append("--no-color")
-
     cmd.append(str(root_dir))
 
     return cmd
