@@ -1,0 +1,49 @@
+Metadata-Version: 2.4
+Name: pigz-python
+Version: 2.0.0
+Summary: A pure Python implementation of the pigz utility.
+Author-email: Ben Guise <bguise135@gmail.com>
+Maintainer-email: Ben Guise <bguise135@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/bguise987/pigz-python
+Project-URL: Repository, https://github.com/bguise987/pigz-python
+Keywords: zip,gzip,compression
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: Topic :: Utilities
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# pigz-python
+The goal of this project is to create a pure Python implementation of the pigz project for parallelizing gzipping.
+
+
+# Usage examples
+
+pigz-python can be utilized by creating a `PigzFile` object and calling the `process_compression_target()` method.
+
+```python
+from pigz_python import PigzFile
+
+pigz_file = PigzFile('foo.txt')
+pigz_file.process_compression_target()
+```
+
+Alternatively, the pigz_python module also provides a convenient helper method to do all of this work for you.
+
+```python
+import pigz_python
+
+pigz_python.compress_file('foo.txt')
+```

@@ -5030,7 +5030,7 @@ class CoregBatchApp(tk.Tk):
 
         ttk.Label(
             other_options_frame,
-            text="'Försäkra om filer är dcm'"
+            text="Försäkra om filer är dcm:"
         ).grid(row=3,column=0,sticky="w", pady=(10,10),padx=10)
 
         self.if_Run_Name_Y = ttk.Radiobutton(
