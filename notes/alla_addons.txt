@@ -35,7 +35,6 @@ Pyinstaller
     används för att packetera som exe 
     "pip install pyinstaller"
     "conda install -c conda-forge pyinstaller"
-    OBS!!!: Måste använda conda varianten för att enviroments ska packeteras korrekt
     https://pypi.org/project/pyinstaller/
     https://pyinstaller.org/en/v4.1/usage.html
 
@@ -46,11 +45,25 @@ Hemsida för icons:
 
     curl -Ls https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/getfsl.sh | sh -s
 
-    conda install -c conda-forge deno
+conda install -c conda-forge deno
 
+pip install pillow
+
+pip install ci_info
+
+
+pip install alla i Elliots kod högst upp
+
+
+
+### Bara lista med addons________
+
+    pip install XlsxWriter
+    pip install pydicom
+    pip install pigz-python
+    conda install -c conda-forge dcm2niix
+    conda install -c conda-forge pyinstaller
     pip install pillow
+    conda install conda-forge::bids-validator
 
-    pip install ci_info
-
-
-    pip install alla i Elliots kod högst upp
+    
