@@ -23,6 +23,7 @@ pyinstaller --collect-datas bidsschematools --add-data "/opt/anaconda3/envs/BIDS
 
 Kopierad:
 pyinstaller \
+  --osx-bundle-identifier se.ki.kex26.bidsandcoreg \
   --collect-datas bidsschematools \
   --add-data "/opt/anaconda3/envs/BIDS_and_coreg/lib/python3.14/site-packages/ci_info/vendors.json:ci_info" \
   --collect-datas etelemetry \
