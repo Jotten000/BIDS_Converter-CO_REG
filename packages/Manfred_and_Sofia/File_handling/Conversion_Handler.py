@@ -129,7 +129,7 @@ def prepAndConvert(Drive_Path   =pathlib.Path(""),
                     f.write("**/dce/\n")
                     f.write("**/dsc/\n")
                     f.write("**/cbf/\n")
-                    f.write("**/dbv/\n")
+                    f.write("**/cbv/\n")
 
             
             Update_Status("Finished Process")
