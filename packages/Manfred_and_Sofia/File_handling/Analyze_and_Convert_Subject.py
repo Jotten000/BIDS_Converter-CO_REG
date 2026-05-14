@@ -236,7 +236,8 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                         ###____________________________________________________
 
                         # ###___For edditor______________________________________
-                        # dcm2niix_path = "dcm2niix"
+                        if not pathlib.Path(str(dcm2niix_path)).is_file():
+                            dcm2niix_path = "dcm2niix"
                         # ###____________________________________________________
 
                         if zippIt:
