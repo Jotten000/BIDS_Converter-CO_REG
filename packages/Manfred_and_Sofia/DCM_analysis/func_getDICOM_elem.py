@@ -33,104 +33,104 @@ def getBasics(modfir=0, modlas=0):
     som ska returneras"""
 
     if modfir == 0 :
-        return ["Modalitet","Avbildning","Alternativ","Weight"]
+        return ["Modality","Sequence","Options","Weight"]
     
-    temp = dict({"Modalitet":"","Avbildning":"","Alternativ":"","Weight":""})
-    temp["Modalitet"] = func_getWhichMod.getMod(modfir)
+    temp = dict({"Modality":"","Sequence":"","Options":"","Weight":""})
+    temp["Modality"] = func_getWhichMod.getMod(modfir)
     if 'PatientWeight' in modfir : 
         temp.update({"Weight":" ".join([str(int(modfir.PatientWeight)),"kg"])})
     
     if modfir.Modality == 'PT' : 
-        temp["Avbildning"] = (" ".join([temp["Avbildning"],
+        temp["Sequence"] = (" ".join([temp["Sequence"],
             _privGetBasics(["Radiopharmaceutical","0x00091036"],
                           modfir,modlas)]))
-        #temp["Alternativ"] = (" ".join([temp["Alternativ"],
+        #temp["Options"] = (" ".join([temp["Options"],
         #    str(int(_privGetBasics(["RadionuclideTotalDose"],
         #                          modfir,modlas))),"Bq"]))
         
         if 'RadionuclideTotalDose' in modfir :
-            temp["Alternativ"] = (" ".join([temp["Alternativ"],str(int(modfir.RadionuclideTotalDose)),"Bq"]))
+            temp["Options"] = (" ".join([temp["Options"],str(int(modfir.RadionuclideTotalDose)),"Bq"]))
         elif (0x00091038) in modfir : 
-            temp["Alternativ"] = (" ".join([temp["Alternativ"],str(int(modfir[0x00091038].value)),"MBq"]))
+            temp["Options"] = (" ".join([temp["Options"],str(int(modfir[0x00091038].value)),"MBq"]))
         elif 'RadionuclideTotalDose' in modlas :
-            temp["Alternativ"] = (" ".join([temp["Alternativ"],str(int(modlas.RadionuclideTotalDose)),"Bq"]))
+            temp["Options"] = (" ".join([temp["Options"],str(int(modlas.RadionuclideTotalDose)),"Bq"]))
         elif (0x00091038) in modlas : 
-            temp["Alternativ"] = (" ".join([temp["Alternativ"],str(int(modlas[0x00091038].value)),"MBq"]))
+            temp["Options"] = (" ".join([temp["Options"],str(int(modlas[0x00091038].value)),"MBq"]))
         
 
         if 'MAC' in modfir.SeriesDescription and ((0x000910BB) in modfir or (0x000910BB) in modlas) : 
-            temp["Alternativ"] = (" ".join([temp["Alternativ"],
+            temp["Options"] = (" ".join([temp["Options"],
                 str(int(_privGetBasics(["0x000910BB"],modfir,modlas))),"mm"]))
         if 'NAC' in modfir.SeriesDescription :
-            temp["Alternativ"] = (" ".join([temp["Alternativ"],"NAC"]))
+            temp["Options"] = (" ".join([temp["Options"],"NAC"]))
 
     else : 
 
         # BRAVO / CUBE / PROP
         if 'BRAVO' in modfir.SeriesDescription : 
-            temp["Avbildning"] = " ".join([temp["Avbildning"],"BRAVO"])
+            temp["Sequence"] = " ".join([temp["Sequence"],"BRAVO"])
         elif 'CUBE' in modfir.SeriesDescription.upper() : 
-            temp["Avbildning"] = " ".join([temp["Avbildning"],"CUBE"])
+            temp["Sequence"] = " ".join([temp["Sequence"],"CUBE"])
         elif 'PROP' in modfir.SeriesDescription.upper() : 
-            temp["Avbildning"] = " ".join([temp["Avbildning"],"PROPELLER"])
-            temp["Alternativ"] = (" ".join([temp["Alternativ"],
+            temp["Sequence"] = " ".join([temp["Sequence"],"PROPELLER"])
+            temp["Options"] = (" ".join([temp["Options"],
                 str(int(_privGetBasics(["SliceThickness"],modfir,modlas))),
                 "mm"]))
 
         # Sekvens
         if 'EP' in modfir.ScanningSequence : 
-            temp["Avbildning"] = " ".join([temp["Avbildning"],"echo planar"])
+            temp["Sequence"] = " ".join([temp["Sequence"],"echo planar"])
 
         if (0x0019109E) in modfir and 'EFGRE' in modfir[0x0019109E].value : 
-            temp["Avbildning"] = (" ".join([temp["Avbildning"],
+            temp["Sequence"] = (" ".join([temp["Sequence"],
                                             "fast gradient echo"]))
         elif 'GR' in modfir.ScanningSequence : 
-            temp["Avbildning"] = " ".join([temp["Avbildning"],"gradient echo"])
+            temp["Sequence"] = " ".join([temp["Sequence"],"gradient echo"])
         
         if (0x0019109E) in modfir and 'FSE' in modfir[0x0019109E].value : 
-            temp["Avbildning"] = (" ".join([temp["Avbildning"],
+            temp["Sequence"] = (" ".join([temp["Sequence"],
                                             "fast spin echo"]))
         elif 'SE' in modfir.ScanningSequence : 
-            temp["Avbildning"] = " ".join([temp["Avbildning"],"spin echo"])
+            temp["Sequence"] = " ".join([temp["Sequence"],"spin echo"])
 
         # FS och K
         if 'FS' in modfir.ScanOptions or ' FS' in modfir.SeriesDescription : 
-            temp["Alternativ"] = " ".join([temp["Alternativ"],"fat saturated"])
+            temp["Options"] = " ".join([temp["Options"],"fat saturated"])
         if 'DYN' in modfir.SeriesDescription : 
-            temp["Alternativ"] = " ".join([temp["Alternativ"],"dynamic"])
+            temp["Options"] = " ".join([temp["Options"],"dynamic"])
         if ('+K' in modfir.SeriesDescription 
             or '_K' in modfir.SeriesDescription 
             or '+ K' in modfir.SeriesDescription 
             or ' K' in modfir.SeriesDescription) : 
-            temp["Alternativ"] = " ".join([temp["Alternativ"],"with contrast"])
+            temp["Options"] = " ".join([temp["Options"],"with contrast"])
         elif 'Gd' in modfir.SeriesDescription : 
-            temp["Alternativ"] = " ".join([temp["Alternativ"],"with contrast"])
+            temp["Options"] = " ".join([temp["Options"],"with contrast"])
         if 'FSPGR' in modfir.SeriesDescription : 
-            temp["Alternativ"] = (" ".join([temp["Alternativ"],"flip angle",
+            temp["Options"] = (" ".join([temp["Options"],"flip angle",
                                          str(int(modfir.FlipAngle))]))
 
         # ASL
         if ((0x0019109E) in modfir 
             and 'ASL' in modfir[0x0019109E].value.upper()) : 
-            temp["Avbildning"] = " ".join([temp["Avbildning"],"ASL"])
+            temp["Sequence"] = " ".join([temp["Sequence"],"ASL"])
             if 'InversionTime' in modfir : 
-                temp["Alternativ"] = (" ".join([temp["Alternativ"],
+                temp["Options"] = (" ".join([temp["Options"],
                                 "PLD =",str(int(modfir.InversionTime)),"ms"]))
             elif 'InversionTime' in modlas : 
-                temp["Alternativ"] = (" ".join([temp["Alternativ"],
+                temp["Options"] = (" ".join([temp["Options"],
                                 "PLD =",str(int(modlas.InversionTime)),"ms"]))
             else : 
-                temp["Alternativ"] = " ".join([temp["Alternativ"],"PLD =","Unknown"])
+                temp["Options"] = " ".join([temp["Options"],"PLD =","Unknown"])
         
         # SWI
         if func_getWhichMod.getMod(modfir) == 'swi' : 
-            temp["Avbildning"] = " ".join([temp["Avbildning"],"Coil",modfir.ReceiveCoilName[modfir.ReceiveCoilName.find("[")+1:][:modfir.ReceiveCoilName.find("]")-1]])
-            temp["Alternativ"] = " ".join([temp["Alternativ"],"Window center",str(int(modfir.WindowCenter))])
+            temp["Sequence"] = " ".join([temp["Sequence"],"Coil",modfir.ReceiveCoilName[modfir.ReceiveCoilName.find("[")+1:][:modfir.ReceiveCoilName.find("]")-1]])
+            temp["Options"] = " ".join([temp["Options"],"Window center",str(int(modfir.WindowCenter))])
 
-    if len(temp["Avbildning"]) > 1 : 
-        temp["Avbildning"] = temp["Avbildning"][1:]
-    if len(temp["Alternativ"]) > 1 : 
-        temp["Alternativ"] = temp["Alternativ"][1:]
+    if len(temp["Sequence"]) > 1 : 
+        temp["Sequence"] = temp["Sequence"][1:]
+    if len(temp["Options"]) > 1 : 
+        temp["Options"] = temp["Options"][1:]
 
     return temp
                 
