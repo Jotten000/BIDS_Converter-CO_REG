@@ -84,10 +84,10 @@ def Write_Patient_Data(Patient_List, out_path, Exsisting_PD=[]):
                 cohortData[2][key] += df["metionin"][value-1]
                 cohortData[3][key] += df["resterande"][value-1]
         ###_Headers______
-        worksheet.write(0, 0, "Karakteristik", head_style2)
+        worksheet.write(0, 0, "Characteristics", head_style2)
         worksheet.write(0, 1, "FDG", head_style2)
         worksheet.write(0, 3, "metionin", head_style2)
-        worksheet.write(0, 5, "resterande", head_style2)
+        worksheet.write(0, 5, "Other", head_style2)
         ###_Amount tab___
         worksheet.write(1, 0, "", head_style2)
         worksheet.write(1, 1, amount_FDG, head_style2)
@@ -202,7 +202,7 @@ def Write_Patient_Data(Patient_List, out_path, Exsisting_PD=[]):
                     worksheet = workbook.add_worksheet("Details table")
                     detai_list = pat.Details_List
                     column_heads = ["ses_tag"   , "Modality", 
-                                    "Sequence", "Alternative" ]
+                                    "Sequence", "Options" ]
                     cf_1 = book.add_format({'bold':True, 
                                                 'bg_color':'gray'})
                     colInt = 0

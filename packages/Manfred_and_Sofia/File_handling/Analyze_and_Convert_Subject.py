@@ -287,7 +287,7 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                         update_status("Converting to bids "
                                       "| Started conversion nr: " 
                                     + str(count_Conversions_Started))
-                        # time.sleep(0.1)
+                        time.sleep(0.1)
                     time.sleep(0.001)
             except Exception as e:
                 Print_func("Error in converter")

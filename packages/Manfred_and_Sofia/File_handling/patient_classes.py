@@ -264,8 +264,8 @@ class PatientList:
                     if not wholeSes == []:
                         tc_list.append(self.funcCohort.getTotal(wholeSes))
 
-        col0 = {"Anat":2,"T1 utan kontrast":3,"T1 med kontrast":4,
-                "T2 utan kontrast":5,"T2 med kontrast":6,"FLAIR":7,
+        col0 = {"Anat":2,"T1 w/o contrast":3,"T2 w/o contrast":4,
+                "T1 with contrast":5,"T2 with contrast":6,"FLAIR":7,
                 "SWI":8,"Func":9, "DWI":10, "ASL":11,"DSC":12,"DCE":13,"CBF":14,
                 "CBV":15,"MS":16,"SVS":17,"MRSI":18}
         col1 = {}
