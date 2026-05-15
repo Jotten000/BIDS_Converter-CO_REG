@@ -6,7 +6,7 @@ def getCohort(hms) :
 
     td = dict({"T1":True})
 
-    thedict = dict({"Tracer":None,"T1 utan kontrast":False,"T1 med kontrast":False,"T2 utan kontrast":False,"T2 med kontrast":False,"FLAIR":False,"SWI":False,"DWI":False,"ASL":False,"DSC":False,"DCE":False,"CBF":False,"CBV":False,"SVS":False,"MRSI":False})
+    thedict = dict({"Tracer":None,"T1 w/o contrast":False,"T2 w/o contrast":False,"T1 with contrast":False,"T2 with contrast":False,"FLAIR":False,"SWI":False,"DWI":False,"ASL":False,"DSC":False,"DCE":False,"CBF":False,"CBV":False,"SVS":False,"MRSI":False})
     
     if func_getWhichMod.getMod(hms) == 'pet' : 
         if 'Radiopharmaceutical' in hms and ('METHIONINE' in hms.Radiopharmaceutical.upper() or 'METIONIN' in hms.Radiopharmaceutical.upper()) or ((0x00091036) in hms and ('METHIONINE' in hms[0x00091036].value.upper() or 'METIONIN' in hms[0x00091036].value.upper())) or 'ProtocolName' in hms and ('METHIONINE' in hms.ProtocolName.upper() or 'METIONIN' in hms.ProtocolName.upper()) : 
@@ -17,13 +17,13 @@ def getCohort(hms) :
             thedict["Tracer"] = 'resterande'
 
     elif func_getWhichMod.getMod(hms) == 'T1w' and ('+K' in hms.SeriesDescription or '_K' in hms.SeriesDescription or '+ K' in hms.SeriesDescription or ' K' in hms.SeriesDescription) : 
-        thedict["T1 med kontrast"] = True
+        thedict["T1 with contrast"] = True
     elif func_getWhichMod.getMod(hms) == 'T1w' : 
-        thedict["T1 utan kontrast"] = True
+        thedict["T1 w/o contrast"] = True
     elif func_getWhichMod.getMod(hms) == 'T2w' and ('+K' in hms.SeriesDescription or '_K' in hms.SeriesDescription or '+ K' in hms.SeriesDescription or ' K' in hms.SeriesDescription) : 
-        thedict["T2 med kontrast"] = True
+        thedict["T2 with contrast"] = True
     elif func_getWhichMod.getMod(hms) == 'T2w' : 
-        thedict["T2 utan kontrast"] = True
+        thedict["T2 w/o contrast"] = True
 
     elif func_getWhichMod.getMod(hms) != 'ERROR' : 
         thedict[func_getWhichMod.getMod(hms).upper()] = True
@@ -52,7 +52,7 @@ def getHeaders(header) :
     if header == 'H' : 
         return ["FDG","metionin","resterande"]
     if header == 'V' : 
-        return ["Anat","T1 utan kontrast","T1 med kontrast","T2 utan kontrast","T2 med kontrast","FLAIR","swi","Func","dwi","asl","dsc","dce","cbf","cbv","MS","svs","mrsi"]
+        return ["Anat","T1 w/o contrast","T2 w/o contrast","T1 with contrast","T2 with contrast","FLAIR","swi","Func","dwi","asl","dsc","dce","cbf","cbv","MS","svs","mrsi"]
 
 
 
