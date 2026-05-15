@@ -2833,75 +2833,75 @@ def run_tracked_command(command: str, work_dir: str, runtime: RuntimeControl) ->
     return output or ""
 
 ###____________Works in terminal______________________________________
-# def build_bids_validator_command(
-#     root_dir: Path,
-#     prune_derivatives: bool = True,
-# ) -> List[str]:
-#     """
-#     Bygger kommandot för BIDS Validator.
+def build_bids_validator_command_term(
+    root_dir: Path,
+    prune_derivatives: bool = True,
+) -> List[str]:
+    """
+    Bygger kommandot för BIDS Validator.
 
-#     Prioritet:
-#     1. Använd installerad bids-validator om den finns i PATH.
-#     2. Annars använd Deno + jsr:@bids/validator.
-#     """
-#     installed_validator = find_executable("bids-validator")
+    Prioritet:
+    1. Använd installerad bids-validator om den finns i PATH.
+    2. Annars använd Deno + jsr:@bids/validator.
+    """
+    installed_validator = find_executable("bids-validator")
 
-#     if installed_validator is not None:
-#         cmd = [installed_validator]
-#     else:
-#         deno = find_executable("deno")
+    if installed_validator is not None:
+        cmd = [installed_validator]
+    else:
+        deno = find_executable("deno")
 
-#         if deno is None:
-#             deno_candidates = [
-#                 Path.home() / ".deno" / "bin" / "deno",
-#                 Path("/opt/anaconda3/envs/BIDS_and_coreg/bin/deno"),
-#             ]
+        if deno is None:
+            deno_candidates = [
+                Path.home() / ".deno" / "bin" / "deno",
+                Path("/opt/anaconda3/envs/BIDS_and_coreg/bin/deno"),
+            ]
 
-#             for deno_candidate in deno_candidates:
-#                 if is_executable_file(deno_candidate):
-#                     deno = str(deno_candidate)
-#                     break
+            for deno_candidate in deno_candidates:
+                if is_executable_file(deno_candidate):
+                    deno = str(deno_candidate)
+                    break
 
-#         if deno is None:
-#             raise RuntimeError(
-#                 "BIDS Validator kunde inte hittas.\n\n"
-#                 "Installera Deno, till exempel med:\n"
-#                 "  conda install -c conda-forge deno\n\n"
-#                 "Testa sedan i terminalen:\n"
-#                 "  deno run -ERWN jsr:@bids/validator --prune --ignoreWarnings /path/to/bids_dataset"
-#             )
+        if deno is None:
+            raise RuntimeError(
+                "BIDS Validator kunde inte hittas.\n\n"
+                "Installera Deno, till exempel med:\n"
+                "  conda install -c conda-forge deno\n\n"
+                "Testa sedan i terminalen:\n"
+                "  deno run -ERWN jsr:@bids/validator --prune --ignoreWarnings /path/to/bids_dataset"
+            )
 
-#         ### OBS: Manfred ändrar
-#         if getattr(sys, 'frozen', False):
-#             bundle_dir = Path(sys._MEIPASS)
-#         else:
-#             bundle_dir = Path(__file__).parent
+        ### OBS: Manfred ändrar
+        if getattr(sys, 'frozen', False):
+            bundle_dir = Path(sys._MEIPASS)
+        else:
+            bundle_dir = Path(__file__).parent
 
-#         deno_path = bundle_dir / "deno"
+        deno_path = bundle_dir / "deno"
 
-#         cmd = [
-#             deno_path,
-#             "run",
-#             "-ERWN",
-#             "jsr:@bids/validator",
-#         ]
+        cmd = [
+            deno_path,
+            "run",
+            "-ERWN",
+            "jsr:@bids/validator",
+        ]
 
-#     if prune_derivatives:
-#         cmd.append("--prune")
+    if prune_derivatives:
+        cmd.append("--prune")
 
-#     # Viktigt: stoppa inte batchen för rekommenderade metadata-varningar.
-#     cmd.append("--ignoreWarnings")
+    # Viktigt: stoppa inte batchen för rekommenderade metadata-varningar.
+    cmd.append("--ignoreWarnings")
 
-#     # Tar bort ANSI-färgkoder från outputen i Tkinter-rutan.
-#     cmd.append("--no-color")
+    # Tar bort ANSI-färgkoder från outputen i Tkinter-rutan.
+    cmd.append("--no-color")
 
-#     cmd.append(str(root_dir))
+    cmd.append(str(root_dir))
 
-#     return cmd
+    return cmd
 ###_______________________________________________________________________
 
 ###___Works in app________________________________________________________
-def build_bids_validator_command(
+def build_bids_validator_command_app(
     root_dir: Path,
     prune_derivatives: bool = True,
 ) -> List[str]:
@@ -2964,10 +2964,19 @@ def run_bids_validator(
     if runtime is not None and runtime.cancel_event.is_set():
         raise UserCancelledError("Körningen avbröts av användaren.")
 
-    cmd = build_bids_validator_command(
+    # Gets the app cmd list of commands
+    cmd = build_bids_validator_command_app(
         root_dir=root_dir,
         prune_derivatives=prune_derivatives,
     )
+    # The first item in the cmd list is the 
+    # path and call to the file in the app.
+    # If this path does not exist, we are in a terminal
+    if not Path(str(cmd[0])).is_file():
+        cmd = build_bids_validator_command_term(
+            root_dir=root_dir,
+            prune_derivatives=prune_derivatives,
+        )
 
     popen_kwargs = {
         "cwd": str(root_dir),

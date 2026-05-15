@@ -52,5 +52,5 @@ app = BUNDLE(
     coll,
     name='Bids_and_coreg.app',
     icon='Prel_BIDS_icon.ico',
-    bundle_identifier=None,
+    bundle_identifier='se.ki.kex26.bidsandcoreg',
 )

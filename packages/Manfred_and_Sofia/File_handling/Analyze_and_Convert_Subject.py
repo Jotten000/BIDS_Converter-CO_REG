@@ -76,6 +76,8 @@ def validate_new_bids(sub_tag_str, ses_tag_str, Bids_Name, target_DCM,
                 + " | Invalid name: " + Bids_Name)
             Print_Func("Source Folder: " + str(Target_Folder.stem))
             Print_Func("______________________________________________")
+            return False
+    return True
 
 def create_BIDS_path(Sub_tag_str, Ses_tag_str, target_dcm, 
                      path_hierachy_start):
@@ -149,7 +151,6 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
     
     # sort the list based on the StuddyDate tag in the first dcm file
     update_status("Sorting the list of folders in chronological order")
-    #update_other_status_text("Sorting the list of folders in chronological order")
     path_list.sort(key=lambda x: x.get("date"))
 
     if path_list == []:
@@ -182,31 +183,39 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
         temp_BIDS_Path = create_BIDS_path(Sub_tag, Ses_tag, 
                                           tempDicom, Output_Path)
 
-        # Checks if path already exist, if not creates it
-        if not temp_BIDS_Path.exists():
-            temp_BIDS_Path.mkdir(parents=True, exist_ok=False)
-
         ### Generates name
         bf_Name = unique_Name(Sub_tag, Ses_tag, temp_BIDS_Path, 
                               tempDicom, name_run, FolderPaths, Print_func)
+        
+        continue_with_conversion = False
         if not bf_Name == False:
             ### Validate Bids
-            validate_new_bids(Sub_tag, Ses_tag, bf_Name, tempDicom, 
-                              FolderPaths, Print_func)
-            
-            # Uptdates the PatientLisat and PatientData with the mods
-            # of this file
-            Sub_List.Uppdate_MODS(tempDicom, getMod(tempDicom))
+            continue_with_conversion = validate_new_bids(
+                                    Sub_tag, 
+                                    Ses_tag, 
+                                    bf_Name, 
+                                    tempDicom, 
+                                    FolderPaths, 
+                                    Print_func)
+        
+        if not continue_with_conversion == False:
+            # Checks if path already exist, if not creates it
+            if not temp_BIDS_Path.exists():
+                temp_BIDS_Path.mkdir(parents=True, exist_ok=False)
 
             # Updates the specifics table list
             detailsDict_temp = getBasics(tempDicom, 
                                          pydicom.dcmread(File_List_Conv[-1]))
 
+            detailsDict_temp["ses_tag"] = Ses_tag
+            Sub_List.Update_Details(tempDicom, detailsDict_temp)
+
             # Update the Cohort Tabel
             Sub_List.Update_Cohort(tempDicom)
 
-            detailsDict_temp["ses_tag"] = Ses_tag
-            Sub_List.Update_Details(tempDicom, detailsDict_temp)
+            # Uptdates the PatientLisat and PatientData with the mods
+            # of this file
+            Sub_List.Uppdate_MODS(tempDicom, getMod(tempDicom))
 
             # ### ___________ Threading ____________________
             # # Searches the list of active subprocesses, kills and 
@@ -226,25 +235,23 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                             Threads_Active_subprocess.remove(r_tas)
                             r_tas.terminate()
                     if len(Threads_Active_subprocess) <= Number_of_threads:
-                        ###___For app________________________________________
+                        ###___For app_______________________________________
                         if getattr(sys, 'frozen', False):
                             base_path = sys._MEIPASS
                         else:
-                            base_path = os.path.dirname(os.path.abspath(__file__))
+                            base_path = os.path.dirname(
+                                os.path.abspath(__file__))
 
                         dcm2niix_path = os.path.join(base_path, "dcm2niix")
-                        ###____________________________________________________
+                        ###_________________________________________________
 
-                        # ###___For edditor______________________________________
-                        # dcm2niix_path = "dcm2niix"
-                        # ###____________________________________________________
+                        # ###___For edditor_________________________________
+                        if not pathlib.Path(str(dcm2niix_path)).is_file():
+                            dcm2niix_path = "dcm2niix"
+                        # ###_______________________________________________
 
                         if zippIt:
                             ### Exports .nii.gz
-                            # strst = " ".join([str(dcm2niix_path), " -ba y -z y","-f",
-                            #                   bf_Name,"-o",str(temp_BIDS_Path),
-                            #                   str(FolderPaths)])
-
                             strst = [str(dcm2niix_path), 
                                     "-ba",
                                     "y",
@@ -257,9 +264,6 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                                     str(FolderPaths)]
                         else:
                             ### Exports .nii
-                            # strst = " ".join([str(dcm2niix_path), " -ba y","-f",bf_Name,
-                            #                   "-o",str(temp_BIDS_Path),
-                            #                   str(FolderPaths)])
                             strst = [str(dcm2niix_path), 
                                     "-ba", 
                                     "y",
@@ -269,18 +273,19 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                                     str(temp_BIDS_Path),
                                     str(FolderPaths)]
                             
-                        if sys.platform == 'win32': ### Windows: in the backround
+                        if sys.platform == 'win32': ### Windows:
                             tempSubPros = subprocess.Popen(strst,
-                                                        creationflags=subprocess.CREATE_NO_WINDOW)
-                        elif sys.platform == 'darwin': ### Mac: in the background
+                                creationflags=subprocess.CREATE_NO_WINDOW)
+                        elif sys.platform == 'darwin': ### Mac: 
                             tempSubPros = subprocess.Popen(strst)
-                        elif sys.platform == 'linux': ### Linux: in backround
+                        elif sys.platform == 'linux': ### Linux:
                             tempSubPros = subprocess.Popen(strst)
                         else: ### just paranoid
                             tempSubPros = subprocess.Popen(strst)
                         Threads_Active_subprocess.append(tempSubPros)
                         temp_Found_Empty_Thread = True
-                        update_status("Converting to bids | Started conversion nr: " 
+                        update_status("Converting to bids "
+                                      "| Started conversion nr: " 
                                     + str(count_Conversions_Started))
                         time.sleep(0.1)
                     time.sleep(0.001)
