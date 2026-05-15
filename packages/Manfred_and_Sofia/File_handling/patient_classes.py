@@ -238,20 +238,34 @@ class PatientList:
             tempAllList.append(p.Get_personal_Data())
         return tempAllList
 
-    def Compile_Cohort(self):
+    def Compile_Cohort(self, epd=[]):
         tc_list = [] # total cohort list
         for pat in self.SubList:
             for ses in pat.sesList.copy():
                 sestag = pat.Get_Ses_Tag(ses.get('ses_date'))
                 wholeSes = []
-                for scan in pat.CohortList.copy():
-                    if scan.get("session") == sestag:
-                        wholeSes.append(scan)
-                if not wholeSes == []:
-                    tc_list.append(self.funcCohort.getTotal(wholeSes))
 
-        col0 = {"Anat":2,"T1 utan kontrast":3,"T1 med kontrast":4,
-                "T2 utan kontrast":5,"T2 med kontrast":6,"FLAIR":7,
+                Exist_Yet = False
+                for sub in epd:
+                    print(sub)
+                    print("")
+                    if pat.PatientID in sub:
+                        
+                        print(str(sub.get(pat.Get_Sub_Tag)))
+                        print("")
+                        if sestag in sub.get(pat.Get_Sub_Tag):
+                            Exist_Yet = True
+                            print("Subject finns redan")
+                
+                if Exist_Yet == False:
+                    for scan in pat.CohortList.copy():
+                        if scan.get("session") == sestag:
+                            wholeSes.append(scan)
+                    if not wholeSes == []:
+                        tc_list.append(self.funcCohort.getTotal(wholeSes))
+
+        col0 = {"Anat":2,"T1 w/o contrast":3,"T2 w/o contrast":4,
+                "T1 with contrast":5,"T2 with contrast":6,"FLAIR":7,
                 "SWI":8,"Func":9, "DWI":10, "ASL":11,"DSC":12,"DCE":13,"CBF":14,
                 "CBV":15,"MS":16,"SVS":17,"MRSI":18}
         col1 = {}

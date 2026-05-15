@@ -4936,22 +4936,22 @@ class CoregBatchApp(tk.Tk):
 
         ttk.Label(
             main,
-            text="BIDS konvertering",
+            text="BIDS conversion",
             font=("Segoe UI", 16, "bold"),
         ).grid(row=0, column=0, columnspan=3, sticky="w", pady=(0, 12))
 
         ttk.Label(
             main,
             text=(
-                ("Välj en rootmapp, programmet kommer att leta efter all"
-                "\nmappar som innehåller endast dicom filer")
+                ("Select a root-folder, the program will search for folders"
+                "\n containing only DICOM files, and convert them to BIDS")
 
             ),
             wraplength=1040,
             justify="left",
         ).grid(row=1, column=0, columnspan=3, sticky="w", pady=(0, 18))
 
-        ttk.Label(main, text="Rotmapp:").grid(row=2, column=0, sticky="w", pady=8)
+        ttk.Label(main, text="Root folder:").grid(row=2, column=0, sticky="w", pady=8)
         ttk.Entry(main, textvariable=self.other_group_root_dir).grid(
             row=2, column=1, sticky="ew", padx=8
         )
@@ -4961,7 +4961,7 @@ class CoregBatchApp(tk.Tk):
             command=self.select_other_group_root_dir,
         ).grid(row=2, column=2, sticky="ew")
 
-        ttk.Label(main, text="Outputmapp:").grid(row=3, column=0, sticky="w", pady=8)
+        ttk.Label(main, text="Output folder:").grid(row=3, column=0, sticky="w", pady=8)
         ttk.Entry(main, textvariable=self.other_group_output_dir).grid(
             row=3, column=1, sticky="ew", padx=8
         )
@@ -4973,7 +4973,7 @@ class CoregBatchApp(tk.Tk):
 
         other_options_frame = ttk.LabelFrame(
             main,
-            text="Valmöjligheter",
+            text="Options",
             padding=10
         )
         other_options_frame.grid(row=4,column=0,columnspan=3,sticky="ew",pady=(14,10))
@@ -4982,7 +4982,7 @@ class CoregBatchApp(tk.Tk):
 
         ttk.Label(
             other_options_frame,
-            text="Parallella kärnor:"
+            text="Parallel cores:"
         ).grid(row=0,column=0,sticky="w",pady=(10,15),padx=10)
 
         self.comob = ttk.Combobox(
@@ -5001,57 +5001,57 @@ class CoregBatchApp(tk.Tk):
 
         ttk.Label(
             other_options_frame,
-            text="Komprimera:"
+            text="Compress:"
         ).grid(row=1,column=0,sticky="w", pady=(10,0),padx=10)
 
         self.ifzipY = ttk.Radiobutton(
             other_options_frame,
-            text = "Y",
+            text = "Yes",
             variable=self.YN,
             value=True
         ).grid(row=1,column=1,columnspan=2,padx=10,sticky="w")
 
         self.ifzipN = ttk.Radiobutton(
             other_options_frame,
-            text = "N",
+            text = "No",
             variable=self.YN,
             value=False
         ).grid(row=1,column=2,columnspan=3,padx=10,sticky="w")
 
         ttk.Label(
             other_options_frame,
-            text="'run-' i alla filnamn:"
+            text="'run-' entity in all names:"
         ).grid(row=2,column=0,sticky="w", pady=(10,0),padx=10)
 
         self.if_Run_Name_Y = ttk.Radiobutton(
             other_options_frame,
-            text = "Y",
+            text = "Yes",
             variable=self.Run_in_name_bool,
             value=True
         ).grid(row=2,column=1,columnspan=2,padx=10,sticky="w")
 
         self.if_Run_Name_N = ttk.Radiobutton(
             other_options_frame,
-            text = "N",
+            text = "No",
             variable=self.Run_in_name_bool,
             value=False
         ).grid(row=2,column=2,columnspan=3,padx=10,sticky="w")
 
         ttk.Label(
             other_options_frame,
-            text="Försäkra om filer är dcm:"
+            text="Ensure are files are valid DICOM:"
         ).grid(row=3,column=0,sticky="w", pady=(10,10),padx=10)
 
         self.if_Run_Name_Y = ttk.Radiobutton(
             other_options_frame,
-            text = "Y",
+            text = "Yes",
             variable=self.guarantee_dcm,
             value=True
         ).grid(row=3,column=1,columnspan=2,padx=10,sticky="w")
 
         self.if_Run_Name_N = ttk.Radiobutton(
             other_options_frame,
-            text = "N",
+            text = "No",
             variable=self.guarantee_dcm,
             value=False
         ).grid(row=3,column=2,columnspan=3,padx=10,sticky="w")
