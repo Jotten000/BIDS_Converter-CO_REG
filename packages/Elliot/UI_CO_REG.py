@@ -4944,7 +4944,7 @@ class CoregBatchApp(tk.Tk):
             main,
             text=(
                 ("Select a root-folder, the program will search for folders"
-                "\n containing only DICOM files, and convert them to BIDS")
+                "\ncontaining only DICOM files, and convert them to BIDS")
 
             ),
             wraplength=1040,
@@ -5039,7 +5039,7 @@ class CoregBatchApp(tk.Tk):
 
         ttk.Label(
             other_options_frame,
-            text="Ensure are files are valid DICOM:"
+            text="Ensure all files are valid DICOM:"
         ).grid(row=3,column=0,sticky="w", pady=(10,10),padx=10)
 
         self.if_Run_Name_Y = ttk.Radiobutton(
@@ -5070,7 +5070,7 @@ class CoregBatchApp(tk.Tk):
 
         ttk.Label(
             main,
-            text="Pågående konvertering:"
+            text="Active conversion:"
         ).grid(row=6, column=0, sticky="w", pady=(10, 4))
 
         self.busy_progress_convert = ttk.Progressbar(

@@ -116,6 +116,18 @@ class PatientList:
         self.SubList = []
         self.Total_mod_list = []
 
+    def Remove_Subject_from_list(self, ID):
+        """Input: PatientID\n
+        Removes corresponding patient.\n
+        Returns coresponding 'sub-' if patient was found and removed, false if not"""
+        if any((to_go:= p).PatientID == str(ID) for p in self.SubList):
+           sub_tag_str = to_go.Get_Sub_Tag()
+           self.SubList.remove(to_go)
+           return sub_tag_str
+        else:
+            return False
+
+
     def _getList(self):
         """Returns sub list"""
         return self.SubList
@@ -230,7 +242,7 @@ class PatientList:
         if inListB == False:
             self.Total_mod_list.append({"mod":modality, 
                                         "desc":desc, 
-                                        "NR":0})
+                                        "NR":1})
 
     def Get_All_Personal_Data(self):
         tempAllList = []
@@ -247,15 +259,9 @@ class PatientList:
 
                 Exist_Yet = False
                 for sub in epd:
-                    print(sub)
-                    print("")
-                    if pat.PatientID in sub:
-                        
-                        print(str(sub.get(pat.Get_Sub_Tag)))
-                        print("")
-                        if sestag in sub.get(pat.Get_Sub_Tag):
+                    if str(pat.PatientID) in str(sub):
+                        if sestag in sub.get("sessions"):
                             Exist_Yet = True
-                            print("Subject finns redan")
                 
                 if Exist_Yet == False:
                     for scan in pat.CohortList.copy():

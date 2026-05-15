@@ -160,7 +160,9 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
     Print_func("\n")
     count_Conversions_Started = 0
     for pd in path_list:
-        if is_killed() == True: 
+        if is_killed() == True:
+            Print_func("")
+            Print_func("____________ Breaking the process ____________")
             break
         File_List_Conv = []
         FolderPaths = pathlib.Path(pd.get("path"))
@@ -231,9 +233,9 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
             try:
                 while not temp_Found_Empty_Thread:
                     for r_tas in reversed(Threads_Active_subprocess):
-                        if r_tas.poll() is not None:
+                        if r_tas[0].poll() is not None:
                             Threads_Active_subprocess.remove(r_tas)
-                            r_tas.terminate()
+                            r_tas[0].terminate()
                     if len(Threads_Active_subprocess) <= Number_of_threads:
                         ###___For app_______________________________________
                         if getattr(sys, 'frozen', False):
@@ -282,7 +284,9 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
                             tempSubPros = subprocess.Popen(strst)
                         else: ### just paranoid
                             tempSubPros = subprocess.Popen(strst)
-                        Threads_Active_subprocess.append(tempSubPros)
+                        Threads_Active_subprocess.append([tempSubPros, 
+                                                          str(tempDicom.PatientID)])
+
                         temp_Found_Empty_Thread = True
                         update_status("Converting to bids "
                                       "| Started conversion nr: " 
@@ -295,4 +299,11 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
 
                     
     for tas in Threads_Active_subprocess:
-        tas.communicate()
+        tas[0].communicate()
+        if is_killed():
+            removedSub = Sub_List.Remove_Subject_from_list(tas[1])
+            if not removedSub == False:
+                Print_func("Will not save " + removedSub + " in tables or participants.tsv")
+                Print_func("Please run it again, or delete it")
+    if is_killed():
+        Print_func("______________________________________________")

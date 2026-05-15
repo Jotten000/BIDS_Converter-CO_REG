@@ -16,6 +16,7 @@ def Write_Patient_Data(Patient_List, out_path, Exsisting_PD=[]):
     recordEmptyCols = []
     for titels in headers:
         recordEmptyCols.append(False)
+        recordEmptyCols.append(False)
 
     ### Modality table for entire dataset
     table_path = out_path / "Modality_Table.xlsx"  
@@ -41,14 +42,15 @@ def Write_Patient_Data(Patient_List, out_path, Exsisting_PD=[]):
                     worksheet.write(rowInt, colInt + 1, 
                                     str(pairs.get("NR")))
                     if rowInt == 1:
-                        recordEmptyCols[int(colInt/2)] = True
+                        recordEmptyCols[int(colInt)] = True
+                        recordEmptyCols[int(colInt) + 1] = True
                     rowInt += 1
             colInt += 2
+        # Cell format 1
+        cf_1 = book.add_format({'bold':True, 
+                                'bg_color':'Red'})
         for rec in range(len(recordEmptyCols)):
                     if recordEmptyCols[rec] == False: 
-                        # Cell format 1
-                        cf_1 = book.add_format({'bold':True, 
-                                                    'bg_color':'Red'})
                         worksheet.write(1, rec, "- - - - -", cf_1)
         worksheet.autofit()
   
@@ -65,7 +67,7 @@ def Write_Patient_Data(Patient_List, out_path, Exsisting_PD=[]):
         head_style2 = book.add_format({'bold':True, 
                                       'bg_color':'gray'})
         ###_Extract_Data_
-        if not Exsisting_PD == None:
+        if not Exsisting_PD == []:
             cohortData = Patient_List.Compile_Cohort(Exsisting_PD)
         else:
             cohortData = Patient_List.Compile_Cohort()
@@ -78,11 +80,11 @@ def Write_Patient_Data(Patient_List, out_path, Exsisting_PD=[]):
             df = pandas.read_excel(table_path)
             amount_FDG += df["FDG"][0]
             amount_met += df["metionin"][0]
-            amount_rest += df["resterande"][0]
+            amount_rest += df["Other"][0]
             for key, value in cohortData[0].items():
                 cohortData[1][key] += df["FDG"][value-1]
                 cohortData[2][key] += df["metionin"][value-1]
-                cohortData[3][key] += df["resterande"][value-1]
+                cohortData[3][key] += df["Other"][value-1]
         ###_Headers______
         worksheet.write(0, 0, "Characteristics", head_style2)
         worksheet.write(0, 1, "FDG", head_style2)
@@ -212,7 +214,7 @@ def Write_Patient_Data(Patient_List, out_path, Exsisting_PD=[]):
                     rowInt = 0
                     for head in headers:
                         for det in detai_list:
-                            if (det.get("Modalitet") == str(head) and
+                            if (det.get("Modality") == str(head) and
                                 det.get("ses_tag" ) == str(sestag)):
                                 rowInt += 1
                                 colInt = 0
