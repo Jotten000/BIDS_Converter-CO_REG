@@ -98,8 +98,15 @@ def prepAndConvert(Drive_Path   =pathlib.Path(""),
                 Update_Status("Writing Metadata & Tables")
                 ### Writing excel
                 try:
-                    Write_Patient_Data(Patient_List=Subject_list, 
-                                    out_path=Output_Folder)
+                    if pathlib.Path.exists(psd_path / FileName):
+                        with open(str(psd_path / FileName)) as file:
+                            priv_data = json.load(file)
+                            Write_Patient_Data(Patient_List=Subject_list, 
+                                               out_path=Output_Folder,
+                                               Exsisting_PD=priv_data)
+                    else:
+                        Write_Patient_Data(Patient_List=Subject_list, 
+                                        out_path=Output_Folder)
                 except Exception as e:
                     Update_Status("Failed")
                     Print_Func("Encountered unexpected error in: Excel_Print")

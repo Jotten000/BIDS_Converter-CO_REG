@@ -2,7 +2,7 @@ import xlsxwriter
 import pathlib
 import pandas
 
-def Write_Patient_Data(Patient_List, out_path):
+def Write_Patient_Data(Patient_List, out_path, Exsisting_PD=[]):
     """Input: PatientList object, pathlib object for output\n
     Reads the list of modalities in PatientList and writes
     it to an excel (xlsx) file, with every key being a column\n
@@ -65,7 +65,10 @@ def Write_Patient_Data(Patient_List, out_path):
         head_style2 = book.add_format({'bold':True, 
                                       'bg_color':'gray'})
         ###_Extract_Data_
-        cohortData = Patient_List.Compile_Cohort()
+        if not Exsisting_PD == None:
+            cohortData = Patient_List.Compile_Cohort(Exsisting_PD)
+        else:
+            cohortData = Patient_List.Compile_Cohort()
         amount_FDG = cohortData[4]
         amount_met = cohortData[5]
         amount_rest = cohortData[6]
@@ -95,6 +98,7 @@ def Write_Patient_Data(Patient_List, out_path):
         worksheet.write(1, 6, "", head_style2)
         ###_Iterate_over_data
         for key, value in cohortData[0].items():
+
             if key == "Func" or key == "MS" or key == "Anat":
                 ### Paint section row
                 worksheet.write(value, 0, key, head_style)
@@ -127,18 +131,7 @@ def Write_Patient_Data(Patient_List, out_path):
                 else:
                     worksheet.write(value, 6,
                         f"({(cohortData[3].get(key)/amount_rest)*100:06.2f}%)")         
-        # ###_Add_Borders____________________
-        # border_style = book.add_format({"Border"      :  2,
-        #                                 'border_color': 'black'})
-        # worksheet.conditional_format('B2:B20', {'type'  : 'noblanks',
-        #                                         'format': border_style})
-        # worksheet.conditional_format('C2:D20', {'type'  : 'noblanks',
-        #                                         'format': border_style})
-        # worksheet.conditional_format('E2:F20', {'type'  : 'noblanks',
-        #                                         'format': border_style})
-        # worksheet.conditional_format('G2:H20', {'type'  : 'noblanks',
-        #                                         'format': border_style})
-        # ###_Final_Styling___________________
+       
         worksheet.autofit()
         worksheet.ignore_errors({"number_stored_as_text": 
                                  "C4:C19 E5:E19 G4:G19"})
@@ -208,8 +201,8 @@ def Write_Patient_Data(Patient_List, out_path):
                 with book as workbook:
                     worksheet = workbook.add_worksheet("Details table")
                     detai_list = pat.Details_List
-                    column_heads = ["ses_tag"   , "Modalitet", 
-                                    "Avbildning", "Alternativ" ]
+                    column_heads = ["ses_tag"   , "Modality", 
+                                    "Sequence", "Alternative" ]
                     cf_1 = book.add_format({'bold':True, 
                                                 'bg_color':'gray'})
                     colInt = 0
@@ -228,6 +221,6 @@ def Write_Patient_Data(Patient_List, out_path):
                                                     det.get(col))
                                     colInt += 1
                             if not det.get("Weight") == None:
-                                worksheet.write(0, 5, "Vikt", cf_1)
+                                worksheet.write(0, 5, "Weight", cf_1)
                                 worksheet.write(1, 5, det.get("Weight"))
                     worksheet.autofit()
