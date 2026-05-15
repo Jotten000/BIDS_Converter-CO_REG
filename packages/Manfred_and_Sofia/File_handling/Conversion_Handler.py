@@ -73,19 +73,10 @@ def prepAndConvert(Drive_Path   =pathlib.Path(""),
                     if (not value == ""          and 
                         not value == "- - - - -" and
                         not pandas.isna(value)):
-                        print("")
-                        print("Mod: " + mods)
-                        print("Value: " + value)
-                        print("Amount in table: " + str(ex_r[mods + ": nr"][mod_row_count]))
                         for i in range(int(ex_r[mods + ": nr"][mod_row_count])):
-                            print("+")
                             Subject_list.Append_Total_Mod_List(modality=mods,
                                                                desc=value)
                         mod_row_count += 1
-                        print("")
-        
-        ### Uses the entire drive foldezr
-        #            (/ "") to add more specific path, t.ex. (/ "Half_1")
         
         try:
             Navigate(Patient_Path      = (Drive_Path),
