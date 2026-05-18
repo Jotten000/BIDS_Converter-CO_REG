@@ -85,7 +85,7 @@ from packages.Manfred_and_Sofia.File_handling import Conversion_Handler
 # Globala inställningar för programmet.
 # Här definieras standardvärden för FSL FLIRT, filnamn, QC-inställningar, BIDS-validering och similarity metrics.
 
-APP_TITLE = "Batch coregistrering PET/T2 -> T1 med Nipype + FSL"
+APP_TITLE = "Batch coregistration of PET/T2 to T1 using Nipype + FSL"
 
 DEFAULT_COST = "normmi"
 DEFAULT_DOF = 6
@@ -389,9 +389,9 @@ def ensure_python_dependencies() -> None:
 
     if missing:
         raise RuntimeError(
-            "Följande Python-paket saknas: "
+            "The following Python packages are missing: "
             + ", ".join(missing)
-            + ". Installera med: pip install "
+            + ". Install with: pip install "
             + " ".join(missing)
         )
 
@@ -577,12 +577,12 @@ def running_on_windows() -> bool:
 
 
 WINDOWS_FSL_DISABLED_MESSAGE = (
-    "Programmet körs nativt i Windows.\n\n"
-    "FSL/FSLeyes är därför avstängt i denna version.\n"
-    "Programmet kommer inte fråga efter FSL-sökväg, och det går inte att öppna "
-    "NIfTI-bilder i FSL från Windows-läget.\n\n"
-    "Kör programmet i WSL, Linux eller macOS om du vill använda FSL-coregistrering "
-    "eller öppna bilder i FSLeyes."
+    "The program is running natively on Windows.\n\n"
+    "FSL/FSLeyes has therefore been disabled in this version.\n"
+    "The program will not ask for the FSL path, and NIfTI images cannot be opened "
+    "in FSL from Windows mode.\n\n"
+    "Run the program in WSL, Linux, or macOS if you want to use FSL coregistration "
+    "or open images in FSLeyes."
 )
 
 
@@ -592,8 +592,8 @@ def raise_if_windows_fsl_feature(feature_name: str) -> None:
     """
     if running_on_windows():
         raise RuntimeError(
-            f"{feature_name} kräver FSL/FSLeyes och är avstängt när programmet körs nativt i Windows.\n\n"
-            "Kör programmet i WSL, Linux eller macOS för den funktionen."
+            f"{feature_name} requires FSL/FSLeyes and is disabled when the program is running natively on Windows.\n\n"
+            "Run the program in WSL, Linux, or macOS to use this feature."
         )
 
 
@@ -724,11 +724,11 @@ def prompt_user_for_fsl_location(parent: tk.Misc) -> Optional[Path]:
 
     while True:
         answer = messagebox.askyesnocancel(
-            "Välj FSL",
-            "Välj var FSL-kommandot 'flirt' finns.\n\n"
-            "Ja = välj FSL-mappen, till exempel /usr/local/fsl\n"
-            "Nej = välj själva flirt-filen, till exempel /usr/local/fsl/bin/flirt\n"
-            "Avbryt = stoppa körningen",
+            "Select FSL",
+            "Select where the FSL command 'flirt' is located.\n\n"
+            "Yes = select the FSL folder, for example /usr/local/fsl\n"
+            "No = select the actual flirt file, for example /usr/local/fsl/bin/flirt\n"
+            "Cancel = stop the run",
             parent=parent,
         )
 
@@ -737,7 +737,7 @@ def prompt_user_for_fsl_location(parent: tk.Misc) -> Optional[Path]:
 
         if answer is True:
             selected_dir = filedialog.askdirectory(
-                title="Välj FSL-mappen eller FSL bin-mappen",
+                title="Select the FSL folder or the FSL bin folder",
                 initialdir=str(Path.home()),
                 parent=parent,
             )
@@ -754,10 +754,10 @@ def prompt_user_for_fsl_location(parent: tk.Misc) -> Optional[Path]:
                 return flirt_path
 
             retry = messagebox.askretrycancel(
-                "Hittade inte flirt",
-                "Kunde inte hitta 'flirt' i den valda mappen.\n\n"
-                "Välj antingen FSL-mappen, t.ex. /usr/local/fsl,\n"
-                "eller FSL:s bin-mapp, t.ex. /usr/local/fsl/bin.",
+                "flirt not found",
+                "Could not find 'flirt' in the selected folder.\n\n"
+                "Select either the FSL folder, e.g. /usr/local/fsl,\n"
+                "or the FSL bin folder, e.g. /usr/local/fsl/bin.",
                 parent=parent,
             )
 
@@ -766,7 +766,7 @@ def prompt_user_for_fsl_location(parent: tk.Misc) -> Optional[Path]:
 
         else:
             selected_file = filedialog.askopenfilename(
-                title="Välj FSL-kommandot flirt",
+                title="Select the FSL command flirt",
                 initialdir=str(Path.home()),
                 parent=parent,
             )
@@ -778,9 +778,9 @@ def prompt_user_for_fsl_location(parent: tk.Misc) -> Optional[Path]:
 
             if flirt_path.name.lower() not in FSL_EXECUTABLE_NAMES:
                 retry = messagebox.askretrycancel(
-                    "Fel fil vald",
-                    "Filen du valde heter inte 'flirt'.\n\n"
-                    "Välj filen som vanligtvis ligger här:\n"
+                   "Wrong file selected",
+                    "The file you selected is not named 'flirt'.\n\n"
+                    "Select the file that is usually located here:\n"
                     "/usr/local/fsl/bin/flirt",
                     parent=parent,
                 )
@@ -792,9 +792,9 @@ def prompt_user_for_fsl_location(parent: tk.Misc) -> Optional[Path]:
 
             if not is_executable_file(flirt_path):
                 retry = messagebox.askretrycancel(
-                    "Filen är inte körbar",
-                    "Den valda filen verkar inte vara körbar.\n\n"
-                    "Kontrollera att du valt rätt FSL/flirt-fil.",
+                    "The file is not executable",
+                    "The selected file does not appear to be executable.\n\n"
+                    "Make sure you selected the correct FSL/flirt file.",
                     parent=parent,
                 )
 
@@ -826,8 +826,8 @@ def ensure_fsl_available_gui(parent: tk.Misc) -> str:
 
         if selected is None:
             raise RuntimeError(
-                "FSL/flirt hittades inte och ingen sökväg valdes. "
-                "Coregistreringen kan inte starta utan FSL."
+                "FSL/flirt was not found and no path was selected. "
+                "Coregistration cannot start without FSL."
             )
 
         configure_fsl_from_flirt(selected)
@@ -836,9 +836,9 @@ def ensure_fsl_available_gui(parent: tk.Misc) -> str:
 
     if shutil.which("flirt") is None and shutil.which("flirt.exe") is None:
         raise RuntimeError(
-            "FSL/flirt valdes, men kommandot kunde ändå inte hittas i PATH.\n\n"
-            f"Vald flirt-sökväg:\n{flirt_path}\n\n"
-            "Kontrollera att du har valt rätt FSL-mapp eller FSL/bin-mapp."
+            "FSL/flirt was selected, but the command still could not be found in PATH.\n\n"
+            f"Selected flirt path:\n{flirt_path}\n\n"
+            "Please make sure you selected the correct FSL folder or FSL/bin folder."
         )
 
     return str(flirt_path)
@@ -856,8 +856,8 @@ def ensure_fsl_available() -> None:
 
     if flirt_path is None:
         raise RuntimeError(
-            "FSL verkar inte vara installerat eller så finns 'flirt' inte i PATH. "
-            "Starta programmet via GUI så kan du välja FSL manuellt."
+            "FSL does not appear to be installed, or 'flirt' could not be found in PATH. "
+            "Start the program from the GUI so you can select FSL manually."
         )
 
 
@@ -940,7 +940,7 @@ def load_json_lenient(path: str) -> Dict[str, Any]:
         data = json.loads(repaired)
 
     if not isinstance(data, dict):
-        raise ValueError(f"JSON-filen måste innehålla ett objekt: {path}")
+        raise ValueError(f"The JSON file must contain an object: {path}")
     return data
 
 def save_json(path: str, data: Dict[str, Any]) -> None:
@@ -1231,14 +1231,14 @@ def compute_similarity_metrics(
     """
 
     if nib is None or np is None:
-        raise RuntimeError("Similarity metrics kräver nibabel och numpy.")
+        raise RuntimeError("Similarity metrics requires nibabel and numpy.")
 
     fixed_data, fixed_kind = _to_3d_metric_data(reference_file)
     moving_data, moving_kind = _to_3d_metric_data(registered_file)
 
     if fixed_data.shape != moving_data.shape:
         raise RuntimeError(
-            "Reference och coregistrerad bild har olika shape. "
+            "Reference and coregistered image have different shapes. "
             f"Reference: {fixed_data.shape}, registered: {moving_data.shape}"
         )
 
@@ -1260,7 +1260,7 @@ def compute_similarity_metrics(
 
     if original_voxel_count < 2:
         raise RuntimeError(
-            f"För få voxlar för similarity metrics: {original_voxel_count}"
+            f"Too few voxels for similarity metrics: {original_voxel_count}"
         )
 
     sampled = False
@@ -1396,7 +1396,7 @@ def similarity_metric_info_for_cost(cost_function: Optional[str]) -> Dict[str, s
             "metric_name": "Unknown metric",
             "short_name": "unknown",
             "better_direction": "unknown",
-            "interpretation": "Okänd cost-function. Ingen matchande similarity metric kunde väljas.",
+            "interpretation": "Unknown cost function. No matching similarity metric could be selected.",
         },
     )
 
@@ -1516,7 +1516,7 @@ def write_similarity_metrics_xlsx(
 
     if Workbook is None:
         raise RuntimeError(
-            "Excel-export kräver openpyxl. Installera med: pip install openpyxl"
+            "Excel export requires openpyxl. Install with: pip install openpyxl"
         )
 
     wb = Workbook()
@@ -1702,7 +1702,7 @@ def collect_existing_similarity_rows_from_outputs(root_dir: Path) -> List[Dict[s
 
     if not summary_root.exists():
         raise FileNotFoundError(
-            f"Hittade ingen registration-mapp: {summary_root}"
+            f"No registration folder found: {summary_root}"
         )
 
     rows: List[Dict[str, Any]] = []
@@ -1733,7 +1733,7 @@ def collect_existing_similarity_rows_from_outputs(root_dir: Path) -> List[Dict[s
             if not Path(reference_file).exists() or not Path(output_file).exists():
                 metrics = {
                     "computed": False,
-                    "error": "ReferenceNIfTIFile eller OutputNIfTIFile saknas på disk.",
+                    "error": "ReferenceNIfTIFile or OutputNIfTIFile is missing on disk.",
                 }
             else:
                 metrics = compute_similarity_metrics_safe(
@@ -2047,29 +2047,29 @@ def extract_b0_volume(
     """
 
     if nib is None or np is None:
-        raise RuntimeError("B0-extraktion kräver nibabel och numpy.")
+        raise RuntimeError("B0 extraction requires nibabel and numpy.")
 
     bval_path = companion_bval_path(dwi_path)
     if bval_path is None:
-        raise FileNotFoundError(f"Hittade ingen .bval till diffusion-filen: {dwi_path}")
+        raise FileNotFoundError(f"No .bval file found for the diffusion file: {dwi_path}")
 
     img = nib.load(str(dwi_path))
     data = np.asanyarray(img.dataobj)
 
     if data.ndim != 4:
-        raise RuntimeError(f"Diffusion-filen är inte 4D: {dwi_path}")
+        raise RuntimeError(f"The diffusion file is not 4D: {dwi_path}")
 
     bvals = np.loadtxt(str(bval_path))
     bvals = np.atleast_1d(bvals).astype(float)
 
     if data.shape[3] != len(bvals):
         raise RuntimeError(
-            f"Antal volymer i DWI ({data.shape[3]}) matchar inte antal b-värden ({len(bvals)}): {dwi_path}"
+            f"Number of volumes in DWI ({data.shape[3]}) does not match the number of b-values ({len(bvals)}): {dwi_path}"
         )
 
     b0_indices = np.where(bvals <= b0_threshold)[0]
     if len(b0_indices) == 0:
-        raise RuntimeError(f"Hittade ingen B0-volym i {bval_path}")
+        raise RuntimeError(f"No B0 volume found in {bval_path}")
 
     b0_index = int(b0_indices[0])
 
@@ -2111,7 +2111,7 @@ def extract_perfusion_reference_volume(
     """
 
     if nib is None or np is None:
-        raise RuntimeError("Perfusion-extraktion kräver nibabel och numpy.")
+        raise RuntimeError("Perfusion extraction requires nibabel and numpy.")
 
     img = nib.load(str(perf_path))
     data = np.asanyarray(img.dataobj)
@@ -2120,7 +2120,7 @@ def extract_perfusion_reference_volume(
         return perf_path
 
     if data.ndim != 4:
-        raise RuntimeError(f"Perfusionsfilen är varken 3D eller 4D: {perf_path}")
+        raise RuntimeError(f"The perfusion file is neither 3D nor 4D: {perf_path}")
 
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -2775,7 +2775,7 @@ def run_tracked_command(command: str, work_dir: str, runtime: RuntimeControl) ->
     """
 
     if runtime.cancel_event.is_set():
-        raise UserCancelledError("Körningen avbröts av användaren.")
+        raise UserCancelledError("The run was cancelled by the user.")
 
     env = os.environ.copy()
     env["FSLOUTPUTTYPE"] = "NIFTI_GZ"
@@ -2822,7 +2822,7 @@ def run_tracked_command(command: str, work_dir: str, runtime: RuntimeControl) ->
         runtime.unregister(proc)
 
     if runtime.cancel_event.is_set():
-        raise UserCancelledError("Körningen avbröts av användaren.")
+        raise UserCancelledError("The run was cancelled by the user.")
 
     if proc.returncode != 0:
         raise RuntimeError(
@@ -2864,10 +2864,10 @@ def build_bids_validator_command_term(
 
         if deno is None:
             raise RuntimeError(
-                "BIDS Validator kunde inte hittas.\n\n"
-                "Installera Deno, till exempel med:\n"
+                "BIDS Validator could not be found.\n\n"
+                "Install Deno, for example with:\n"
                 "  conda install -c conda-forge deno\n\n"
-                "Testa sedan i terminalen:\n"
+                "Then test in the terminal:\n"
                 "  deno run -ERWN jsr:@bids/validator --prune --ignoreWarnings /path/to/bids_dataset"
             )
 
@@ -2962,7 +2962,7 @@ def run_bids_validator(
     - output
     """
     if runtime is not None and runtime.cancel_event.is_set():
-        raise UserCancelledError("Körningen avbröts av användaren.")
+        raise UserCancelledError("The run was cancelled by the user.")
 
     # Gets the app cmd list of commands
     cmd = build_bids_validator_command_app(
@@ -3000,7 +3000,7 @@ def run_bids_validator(
             runtime.unregister(proc)
 
     if runtime is not None and runtime.cancel_event.is_set():
-        raise UserCancelledError("BIDS-valideringen avbröts av användaren.")
+        raise UserCancelledError("BIDS validation was cancelled by the user.")
 
     return {
         "valid": proc.returncode == 0,
@@ -3365,7 +3365,7 @@ def apply_transform_to_4d_by_volume(
 
     for vol_idx in range(data.shape[3]):
         if runtime.cancel_event.is_set():
-            raise UserCancelledError("Körningen avbröts av användaren.")
+            raise UserCancelledError("The run was cancelled by the user.")
 
         in_vol = split_dir / f"vol_{vol_idx:04d}.nii.gz"
         out_vol = split_dir / f"vol_{vol_idx:04d}_xfm.nii.gz"
@@ -3490,7 +3490,7 @@ def process_one_registration(
         name_suffix=output_name_suffix,
     )
     if runtime.cancel_event.is_set():
-        raise UserCancelledError("Körningen avbröts av användaren.")
+        raise UserCancelledError("The run was cancelled by the user.")
 
     existing_complete = (
         out_nifti.exists()
@@ -3612,7 +3612,7 @@ def process_perfusion_registration(
     )
 
     if runtime.cancel_event.is_set():
-        raise UserCancelledError("Körningen avbröts av användaren.")
+        raise UserCancelledError("The run was cancelled by the user.")
 
     existing_complete = (
         out_nifti.exists()
@@ -3765,7 +3765,7 @@ def process_session(
     session = session_dir.name
 
     if runtime.cancel_event.is_set():
-        raise UserCancelledError("Körningen avbröts av användaren.")
+        raise UserCancelledError("The run was cancelled by the user.")
 
     session_work = work_root / subject / session
     session_work.mkdir(parents=True, exist_ok=True)
@@ -4313,7 +4313,7 @@ class CoregBatchApp(tk.Tk):
 
         self.cpu_info_text = tk.StringVar(
             value=(
-                f"Tillgängliga CPU-kärnor: {self.available_cpu_cores}. "
+                f"Available CPU cores: {self.available_cpu_cores}. "
                 #f"Rekommenderad start: {self.recommended_cpu_workers} workers. "
                 #"Öka vid behov om RAM och disk klarar det."
             )
@@ -4323,9 +4323,9 @@ class CoregBatchApp(tk.Tk):
 
         self.root_dir = tk.StringVar()
         self.status_text = tk.StringVar(
-            value="Välj rotmappen som innehåller sub-*/ses-* och tryck Run."
+            value="Select the root folder containing sub-*/ses-* and click Run."
         )
-        self.current_item_text = tk.StringVar(value="Ingen körning aktiv.")
+        self.current_item_text = tk.StringVar(value="No active run.")
         self.progress_value = tk.DoubleVar(value=0.0)
 
         self.run_t2_var = tk.BooleanVar(value=False)
@@ -4370,7 +4370,7 @@ class CoregBatchApp(tk.Tk):
         self.guarantee_dcm = tk.BooleanVar(value=True)
         self.YN = tk.BooleanVar(value=True)
         self.other_status_text = tk.StringVar(
-            value="Välj rotmapp med DICOM-filer, välj map där BIDS-struktur önskas, och tryck Run."
+            value="Select the root folder containing DICOM files, select the folder where the BIDS structure should be created, and click Run.."
         )
         ###________________________________
 
@@ -4382,7 +4382,7 @@ class CoregBatchApp(tk.Tk):
         if running_on_windows():
             self.show_BIDS_Converter()
             self.other_status_text.set(
-                "Programmet körs i Windows. Coregistrering med FSL är avstängd, därför öppnas BIDS Converter automatiskt."
+                "The program is running on Windows. Coregistration with FSL is disabled, so BIDS Converter opens automatically."
             )
         else:
             self.show_coregistrering_ui()
@@ -4400,36 +4400,36 @@ class CoregBatchApp(tk.Tk):
         menubar = tk.Menu(self)
 
         view_menu = tk.Menu(menubar, tearoff=0)
-        view_menu.add_command(label="Coregistrering UI", command=self.show_coregistrering_ui)
+        view_menu.add_command(label="Coregistration UI", command=self.show_coregistrering_ui)
         view_menu.add_command(label="BIDS Converter", command=self.show_BIDS_Converter)
         menubar.add_cascade(label="Mode", menu=view_menu)
 
         metrics_menu = tk.Menu(menubar, tearoff=0)
         metrics_menu.add_command(
-            label="Skapa/uppdatera similarity metrics Excel",
+            label="Create/update similarity metrics Excel",
             command=self.create_similarity_metrics_from_menu,
         )
         metrics_menu.add_command(
-            label="Öppna similarity metrics Excel",
+            label="Open similarity metrics Excel",
             command=self.open_similarity_metrics_from_menu,
         )
         metrics_menu.add_separator()
         metrics_menu.add_command(
-            label="Skapa checkerboard QC för alla färdiga sessioner",
+            label="Create checkerboard QC for all completed sessions",
             command=self.create_checkerboard_all_from_menu,
         )
         metrics_menu.add_command(
-            label="Skapa checkerboard QC för vald session",
+            label="Create checkerboard QC for selected session",
             command=self.create_checkerboard_from_menu,
         )
         metrics_menu.add_command(
-            label="Öppna checkerboard QC för vald session i FSL",
+            label="Open checkerboard QC for selected session in FSL",
             command=self.open_checkerboard_from_menu,
         )
-        menubar.add_cascade(label="Coregistrering QC", menu=metrics_menu)
+        menubar.add_cascade(label="Coregistration QC", menu=metrics_menu)
 
         app_menu = tk.Menu(menubar, tearoff=0)
-        app_menu.add_command(label="Välj/ändra FSL-sökväg", command=self.select_fsl_manually)
+        app_menu.add_command(label="Select/change FSL path", command=self.select_fsl_manually)
         app_menu.add_separator()
         app_menu.add_command(label="Exit", command=self.request_exit)
         menubar.add_cascade(label="App", menu=app_menu)
@@ -4500,11 +4500,11 @@ class CoregBatchApp(tk.Tk):
             return
 
         answer = messagebox.askyesnocancel(
-            "Stäng programmet",
-            "Programmet kör fortfarande.\n\n"
-            "Ja = låt pågående jobb bli klara och stäng programmet när allt är färdigt.\n"
-            "Nej = avbryt alla pågående jobb direkt och stäng programmet nu.\n"
-            "Avbryt = fortsätt köra programmet."
+            "Close application",
+            "The application is still running.\n\n"
+            "Yes = let the current jobs finish and close the application when everything is done.\n"
+            "No = cancel all current jobs immediately and close the application now.\n"
+            "Cancel = keep the application running."
         )
 
         if answer is None:
@@ -4512,10 +4512,10 @@ class CoregBatchApp(tk.Tk):
 
         if answer is True:
             self.close_when_done = True
-            self.status_text.set("Programmet kommer att stängas automatiskt när alla pågående jobb är klara.")
-            self.log("Användaren valde: slutför pågående jobb och stäng när klart.")
+            self.status_text.set("The program will close automatically when all current jobs are done.")
+            self.log("User selected: finish current jobs and close when done.")
         else:
-            self.log("Användaren valde: avbryt alla jobb och stäng nu.")
+            self.log("User selected: cancel all jobs and close now.")
             self.abort_all_and_close()
 
     def abort_all_and_close(self) -> None:
@@ -4545,7 +4545,7 @@ class CoregBatchApp(tk.Tk):
         """
 
         if self.is_running:
-            messagebox.showwarning("Körning pågår", "Byt inte UI medan programmet kör.")
+            messagebox.showwarning("Run in progress", "Do not switch UI while the program is running.")
             return
 
         self.current_view = "coregistrering_ui"
@@ -4565,7 +4565,7 @@ class CoregBatchApp(tk.Tk):
         """
        
         if self.is_running:
-            messagebox.showwarning("Körning pågår", "Byt inte UI medan programmet kör.")
+            messagebox.showwarning("Run in progress", "Do not switch UI while the program is running")
             return
 
         self.current_view = "BIDS_convers"
@@ -4581,7 +4581,7 @@ class CoregBatchApp(tk.Tk):
             return
 
         path = filedialog.askdirectory(
-            title="Välj rotmapp för BIDS Converter",
+            title="Select root folder for BIDS Converter",
             initialdir=self.other_group_root_dir.get().strip() or "/",
         )
         if path:
@@ -4595,7 +4595,7 @@ class CoregBatchApp(tk.Tk):
             return
 
         path = filedialog.askdirectory(
-            title="Välj outputmapp för BIDS Conveter",
+            title="Select output folder for BIDS Converter",
             initialdir=self.other_group_output_dir.get().strip() or "/",
         )
         if path:
@@ -4608,7 +4608,7 @@ class CoregBatchApp(tk.Tk):
         Group 13"""
         self.Breaking_Converter_Program = True
         if self.Convert_Thread_Active == True:
-            self.update_other_status_text("Stoppar processen")
+            self.update_other_status_text("Stopping the process")
 
     def get_broken_state(self):
         """Return the bool for if the break button has been pressed\n
@@ -4719,60 +4719,60 @@ class CoregBatchApp(tk.Tk):
         ttk.Label(
             main,
             text=(
-                "Programmet frågar efter en rotmapp. Det söker igenom alla sub-*/ses-* och registrerar "
-                "PET till T1. T2, diffusion och perfusion till T1 körs bara om du markerar respektive kryssruta. "
-                "I FSL öppnas bara T1-bilden och filer som redan ligger i T1-space. "
-                "Similarity metrics kan skapas via menyn längst upp."
+                "The program asks for a root folder. It searches through all sub-*/ses-* folders and registers "
+                "PET to T1. T2, diffusion, and perfusion are registered to T1 only if you select the corresponding checkbox. "
+                "In FSL, only the T1 image and files that are already in T1 space are opened. "
+                "Similarity metrics can be created via the menu at the top."
             ),
             wraplength=1040,
         ).grid(row=1, column=0, columnspan=3, sticky="w", pady=(0, 14))
 
-        ttk.Label(main, text="Rotmapp:").grid(row=2, column=0, sticky="w", pady=6)
+        ttk.Label(main, text="Root Folder:").grid(row=2, column=0, sticky="w", pady=6)
         ttk.Entry(main, textvariable=self.root_dir).grid(row=2, column=1, sticky="ew", padx=8)
         ttk.Button(main, text="Browse", command=self.select_root_dir).grid(row=2, column=2, sticky="ew")
 
-        options_frame = ttk.LabelFrame(main, text="Valfria coregistreringar", padding=10)
+        options_frame = ttk.LabelFrame(main, text="Optional registrations", padding=10)
         options_frame.grid(row=3, column=0, columnspan=3, sticky="ew", pady=(14, 10))
         options_frame.columnconfigure(0, weight=1)
         options_frame.columnconfigure(1, weight=1)
         options_frame.columnconfigure(2, weight=1)
         options_frame.columnconfigure(3, weight=1)
 
-        ttk.Label(options_frame, text="Parallella workers:").grid(
+        ttk.Label(options_frame, text="Parallel processes:").grid(
             row=1, column=0, sticky="w", pady=(10, 0)
         )
 
         self.run_t2_check = ttk.Checkbutton(
             options_frame,
-            text="Kör T2 -> T1 coregistrering",
+            text="Run T2 -> T1 coregistration",
             variable=self.run_t2_var,
         )
         self.run_t2_check.grid(row=0, column=0, sticky="w", padx=(0, 12))
 
         self.run_diffusion_check = ttk.Checkbutton(
             options_frame,
-            text="Kör diffusion -> T1 coregistrering",
+            text="Run diffusion -> T1 coregistration",
             variable=self.run_diffusion_var,
         )
         self.run_diffusion_check.grid(row=0, column=1, sticky="w", padx=(0, 12))
 
         self.run_perfusion_check = ttk.Checkbutton(
             options_frame,
-            text="Kör perfusion -> T1 coregistrering",
+            text="Run perfusion -> T1 coregistrering",
             variable=self.run_perfusion_var,
         )
         self.run_perfusion_check.grid(row=0, column=2, sticky="w", padx=(0, 12))
 
         self.use_contrast_check = ttk.Checkbutton(
             options_frame,
-            text="Använd kontrast (ce-gd) för T1/T2",
+            text="Use contrast-enhanced (ce-gd) for T1/T2",
             variable=self.use_contrast_var,
         )
         self.use_contrast_check.grid(row=0, column=3, sticky="w")
 
         self.validate_bids_check = ttk.Checkbutton(
             options_frame,
-            text="Validera BIDS innan körning",
+            text="Validate BIDS before running",
             variable=self.validate_bids_var,
         )
         
@@ -4798,7 +4798,7 @@ class CoregBatchApp(tk.Tk):
             textvariable=self.cpu_info_text,
         ).grid(row=1, column=2, columnspan=2, sticky="w", pady=(10, 0))
 
-        ttk.Label(options_frame, text="Diffusion cost:").grid(
+        ttk.Label(options_frame, text="Diffusion cost function:").grid(
             row=2, column=0, sticky="w", pady=(10, 0)
         )
 
@@ -4811,7 +4811,7 @@ class CoregBatchApp(tk.Tk):
         )
         self.diffusion_cost_combo.grid(row=2, column=1, sticky="w", pady=(10, 0))
 
-        ttk.Label(options_frame, text="Perfusion cost:").grid(
+        ttk.Label(options_frame, text="Perfusion cost function:").grid(
             row=2, column=2, sticky="w", pady=(10, 0)
         )
 
@@ -4835,15 +4835,15 @@ class CoregBatchApp(tk.Tk):
 
         ttk.Button(btn_frame, text="Exit", command=self.request_exit).pack(side="left")
 
-        session_box = ttk.LabelFrame(main, text="Öppna session i FSL", padding=10)
+        session_box = ttk.LabelFrame(main, text="Open session in FSL", padding=10)
         session_box.grid(row=5, column=0, columnspan=3, sticky="ew", pady=(0, 10))
         session_box.columnconfigure(0, weight=1)
 
         ttk.Label(
             session_box,
             text=(
-                "Efter körning visas bara subject/session där det finns färdig coregistrering. "
-                "När du öppnar i FSL laddas bara T1 + coreg-filer."
+                "After the run, only subject/session folders with completed coregistration are shown. "
+                "When opening in FSL, only the T1 image and coregistered files are loaded."
             ),
             wraplength=1040,
         ).grid(row=0, column=0, columnspan=3, sticky="w", pady=(0, 8))
@@ -4857,20 +4857,20 @@ class CoregBatchApp(tk.Tk):
 
         self.refresh_sessions_button = ttk.Button(
             session_box,
-            text="Läs in färdiga sessioner",
+            text="Load completed sessions",
             command=self.refresh_session_choices,
         )
         self.refresh_sessions_button.grid(row=1, column=1, sticky="ew", padx=(0, 8))
 
         self.open_session_button = ttk.Button(
             session_box,
-            text="Öppna T1 + coreg i FSL",
+            text="Open T1 + coregistered files in FSL",
             command=self.open_selected_session_in_fsl,
             state="disabled",
         )
         self.open_session_button.grid(row=1, column=2, sticky="ew")
 
-        progress_box = ttk.LabelFrame(main, text="Arbetsstatus", padding=10)
+        progress_box = ttk.LabelFrame(main, text="Processing status", padding=10)
         progress_box.grid(row=6, column=0, columnspan=3, sticky="ew", pady=(0, 10))
         progress_box.columnconfigure(0, weight=1)
 
@@ -4887,7 +4887,7 @@ class CoregBatchApp(tk.Tk):
         )
         self.session_progress.grid(row=1, column=0, sticky="ew", pady=(0, 8))
 
-        ttk.Label(progress_box, text="Pågående registrering:").grid(
+        ttk.Label(progress_box, text="Registration in progress:").grid(
             row=2, column=0, sticky="w", pady=(0, 4)
         )
 
@@ -5208,18 +5208,18 @@ class CoregBatchApp(tk.Tk):
         root = self.root_dir.get().strip()
         if not root:
             self.set_session_choices([])
-            messagebox.showwarning("Ingen rotmapp", "Välj rotmappen först.")
+            messagebox.showwarning("No root folder selected", "Please select the root folder first.")
             return
 
         root_path = Path(root)
         if not root_path.exists():
             self.set_session_choices([])
-            messagebox.showerror("Error", f"Rotmappen finns inte:\n{root}")
+            messagebox.showerror("Error", f"The selected root folder does not exist.:\n{root}")
             return
 
         if not root_path.is_dir():
             self.set_session_choices([])
-            messagebox.showerror("Error", f"Det här är inte en mapp:\n{root}")
+            messagebox.showerror("Error", f"This is not a folder:\n{root}")
             return
 
         all_sessions = find_registered_subject_session_dirs(root_path)
@@ -5231,11 +5231,11 @@ class CoregBatchApp(tk.Tk):
         self.set_session_choices(items)
 
         self.status_text.set(
-            f"Hittade {len(items)} session(er) med färdig coregistrering. "
-            "Välj en session och öppna T1 + coreg-filer i FSL."
+            f"Found {len(items)} session(s) with completed coregistration. "
+            "Select a session and open the T1 image and coregistered files in FSL."
         )
 
-        self.log(f"Sessioner med färdig coregistrering i: {root_path}")
+        self.log(f"Sessions with completed coregistration in: {root_path}")
         for label, path in items:
             self.log(f"  {label}: {path}")
         self.log("")
@@ -5246,9 +5246,9 @@ class CoregBatchApp(tk.Tk):
         """
 
         if running_on_windows():
-            self.status_text.set("FSL är avstängt när programmet körs nativt i Windows.")
+            self.status_text.set("FSL is disabled when the program is running natively on Windows.")
             messagebox.showinfo(
-                "FSL avstängt på Windows",
+                "FSL is disabled on Windows",
                 WINDOWS_FSL_DISABLED_MESSAGE,
                 parent=self,
             )
@@ -5256,8 +5256,8 @@ class CoregBatchApp(tk.Tk):
 
         if self.is_running:
             messagebox.showwarning(
-                "Körning pågår",
-                "Ändra inte FSL-sökväg medan programmet kör."
+                "Run in progress",
+                "Do not change the FSL path while the program is running."
             )
             return
 
@@ -5270,20 +5270,20 @@ class CoregBatchApp(tk.Tk):
             configure_fsl_from_flirt(selected)
             remember_fsl_flirt_path(selected)
 
-            self.status_text.set(f"FSL-sökväg sparad: {selected}")
-            self.log(f"FSL-sökväg sparad: {selected}")
+            self.status_text.set(f"FSL path saved: {selected}")
+            self.log(f"FSL path saved: {selected}")
 
             messagebox.showinfo(
-                "FSL sparat",
-                "FSL-sökvägen har sparats för framtida körningar.\n\n"
+                "FSL saved",
+                "The FSL path has been saved for future runs.\n\n"
                 f"flirt:\n{selected}"
             )
 
         except Exception as exc:
-            self.status_text.set(f"Fel vid val av FSL: {exc}")
+            self.status_text.set(f"Error when selecting FSL: {exc}")
             messagebox.showerror(
                 "FSL error",
-                f"{exc}\n\nDetaljer:\n{traceback.format_exc()}"
+                f"{exc}\n\nDetails:\n{traceback.format_exc()}"
             )
 
     def validate_root_dir_for_similarity_metrics(self) -> Path:
@@ -5302,16 +5302,16 @@ class CoregBatchApp(tk.Tk):
 
         if missing:
             raise RuntimeError(
-                "Följande Python-paket saknas: "
+                "The following Python packages are missing: "
                 + ", ".join(missing)
-                + ". Installera med: pip install "
+                + ". Install with: pip install "
                 + " ".join(missing)
             )
 
         root = self.root_dir.get().strip()
 
         if not root:
-            raise ValueError("Välj rotmappen först.")
+            raise ValueError("Please select the root folder first.")
 
         root_path = Path(root)
 
@@ -5332,21 +5332,21 @@ class CoregBatchApp(tk.Tk):
 
         if self.is_running:
             messagebox.showwarning(
-                "Körning pågår",
-                "Vänta tills nuvarande körning är klar innan du skapar similarity metrics."
+                "Run in progress",
+                "Wait until the current run is finished before creating similarity metrics."
             )
             return
 
         try:
             root_path = self.validate_root_dir_for_similarity_metrics()
         except Exception as exc:
-            self.status_text.set(f"Fel: {exc}")
-            messagebox.showerror("Error", f"{exc}\n\nDetaljer:\n{traceback.format_exc()}")
+            self.status_text.set(f"Error: {exc}")
+            messagebox.showerror("Error", f"{exc}\n\nDetails:\n{traceback.format_exc()}")
             return
 
         self.set_controls_running(True)
-        self.set_busy(True, "Skapar similarity metrics Excel...")
-        self.status_text.set("Skapar similarity metrics Excel från färdiga coregistreringar...")
+        self.set_busy(True, "Creating Excel file with similarity metrics...")
+        self.status_text.set("Creating Excel file with similarity metrics from completed coregistrations...")
 
         self.worker_thread = threading.Thread(
             target=self._worker_create_similarity_metrics,
@@ -5364,8 +5364,8 @@ class CoregBatchApp(tk.Tk):
             summary_root = root_path / "derivatives" / "registration"
             summary_root.mkdir(parents=True, exist_ok=True)
 
-            self.ui_queue.put(("log", "Skapar similarity metrics Excel från befintliga coregistreringar..."))
-            self.ui_queue.put(("log", f"Rotmapp: {root_path}"))
+            self.ui_queue.put(("log", "Creating similarity metrics Excel file from existing coregistrations..."))
+            self.ui_queue.put(("log", f"Root file: {root_path}"))
 
             rows = collect_existing_similarity_rows_from_outputs(root_path)
 
@@ -5411,9 +5411,9 @@ class CoregBatchApp(tk.Tk):
 
             if not similarity_metrics_path.exists():
                 answer = messagebox.askyesno(
-                    "Similarity metrics saknas",
-                    "Excel-filen med similarity metrics finns inte ännu.\n\n"
-                    "Vill du skapa den nu?"
+                    "Similarity metrics missing",
+                    "The Excel file containing the similarity metrics does not exist yet.\n\n"
+                    "Do you want to create it now?"
                 )
 
                 if answer:
@@ -5424,13 +5424,13 @@ class CoregBatchApp(tk.Tk):
             open_file_with_default_app(similarity_metrics_path)
 
             self.status_text.set(
-                f"Öppnade similarity metrics Excel: {similarity_metrics_path}"
+                f"Opened Excel file with similarity metrics: {similarity_metrics_path}"
             )
-            self.log(f"Öppnade similarity metrics Excel: {similarity_metrics_path}")
+            self.log(f"Opened Excel file with similarity metrics: {similarity_metrics_path}")
 
         except Exception as exc:
-            self.status_text.set(f"Fel: {exc}")
-            messagebox.showerror("Error", f"{exc}\n\nDetaljer:\n{traceback.format_exc()}")
+            self.status_text.set(f"Error: {exc}")
+            messagebox.showerror("Error", f"{exc}\n\nDetails:\n{traceback.format_exc()}")
 
     def validate_checkerboard_selection(self) -> Tuple[Path, Path, str]:
         """
@@ -5439,14 +5439,14 @@ class CoregBatchApp(tk.Tk):
 
         if nib is None or np is None:
             raise RuntimeError(
-                "Checkerboard QC kräver nibabel och numpy. "
-                "Installera med: pip install nibabel numpy"
+                "Checkerboard QC requires nibabel and numpy. "
+                "Install with: pip install nibabel numpy"
             )
 
         root = self.root_dir.get().strip()
 
         if not root:
-            raise ValueError("Välj rotmappen först.")
+            raise ValueError("Please select the root folder first..")
 
         root_path = Path(root)
 
@@ -5461,8 +5461,8 @@ class CoregBatchApp(tk.Tk):
 
         if not session_path_str:
             raise ValueError(
-                "Välj en färdig session först. "
-                "Tryck på 'Läs in färdiga sessioner' om listan är tom."
+                "Please select a completed session first. "
+                "Click 'Load completed sessions' if the list is empty."
             )
 
         session_path = Path(session_path_str)
@@ -5479,8 +5479,8 @@ class CoregBatchApp(tk.Tk):
 
         if self.is_running:
             messagebox.showwarning(
-                "Körning pågår",
-                "Vänta tills nuvarande körning är klar innan du skapar checkerboard QC."
+                "Run in progress",
+                "Wait until the current run is finished before creating checkerboard QC."
             )
             return
 
@@ -5488,12 +5488,12 @@ class CoregBatchApp(tk.Tk):
             root_path, session_path, selection = self.validate_checkerboard_selection()
         except Exception as exc:
             self.status_text.set(f"Fel: {exc}")
-            messagebox.showerror("Error", f"{exc}\n\nDetaljer:\n{traceback.format_exc()}")
+            messagebox.showerror("Error", f"{exc}\n\nDetails:\n{traceback.format_exc()}")
             return
 
         self.set_controls_running(True)
-        self.set_busy(True, f"Skapar checkerboard QC för {selection}...")
-        self.status_text.set(f"Skapar checkerboard QC för {selection}...")
+        self.set_busy(True, f"Creating checkerboard QC for {selection}...")
+        self.status_text.set(f"Creating checkerboard QC for {selection}...")
 
         self.worker_thread = threading.Thread(
             target=self._worker_create_checkerboard,
@@ -5509,39 +5509,39 @@ class CoregBatchApp(tk.Tk):
 
         if self.is_running:
             messagebox.showwarning(
-                "Körning pågår",
-                "Vänta tills nuvarande körning är klar innan du skapar checkerboard QC."
+                "Run in progress",
+                "Wait until the current run is finished before creating checkerboard QC."
             )
             return
 
         root = self.root_dir.get().strip()
 
         if not root:
-            messagebox.showwarning("Ingen rotmapp", "Välj rotmappen först.")
+            messagebox.showwarning("No root folder selected", "Please select a root folder first")
             return
 
         root_path = Path(root)
 
         if not root_path.exists():
-            messagebox.showerror("Error", f"Rotmappen finns inte:\n{root_path}")
+            messagebox.showerror("Error", f"The root folder does not exist:\n{root_path}")
             return
 
         if not root_path.is_dir():
-            messagebox.showerror("Error", f"Det här är inte en mapp:\n{root_path}")
+            messagebox.showerror("Error", f"This is not a folder:\n{root_path}")
             return
 
         if nib is None or np is None:
             messagebox.showerror(
-                "Saknade paket",
-                "Checkerboard QC kräver nibabel och numpy.\n\n"
-                "Installera med:\n"
+                "Missing packages",
+                "Checkerboard QC requires nibabel and numpy.\n\n"
+                "Install with:\n"
                 "pip install nibabel numpy"
             )
             return
 
         self.set_controls_running(True)
-        self.set_busy(True, "Skapar checkerboard QC för alla färdiga sessioner...")
-        self.status_text.set("Skapar checkerboard QC för alla färdiga sessioner...")
+        self.set_busy(True, "Creating checkerboard QC for all completed sessions...")
+        self.status_text.set("Creating checkerboard QC for all completed sessions...")
 
         self.worker_thread = threading.Thread(
             target=self._worker_create_checkerboard_all,
@@ -5556,8 +5556,8 @@ class CoregBatchApp(tk.Tk):
         """
 
         try:
-            self.ui_queue.put(("log", "Skapar checkerboard QC för alla färdiga sessioner..."))
-            self.ui_queue.put(("log", f"Rotmapp: {root_path}"))
+            self.ui_queue.put(("log", "Creating checkerboard QC for all completed sessions..."))
+            self.ui_queue.put(("log", f"Root folder: {root_path}"))
 
             results = create_checkerboards_for_all_registered_sessions(
                 root_dir=root_path,
@@ -5609,7 +5609,7 @@ class CoregBatchApp(tk.Tk):
         """
 
         try:
-            self.ui_queue.put(("log", f"Skapar checkerboard QC för: {selection}"))
+            self.ui_queue.put(("log", f"Creating checkerboard QC for: {selection}"))
             self.ui_queue.put(("log", f"Session: {session_path}"))
 
             results = create_checkerboards_for_session(
@@ -5654,10 +5654,10 @@ class CoregBatchApp(tk.Tk):
 
         if running_on_windows():
             self.status_text.set(
-                "Kan inte öppna checkerboard-QC i FSL när programmet körs nativt i Windows."
+                "Cannot open checkerboard QC in FSL when the program is running natively on Windows."
             )
             messagebox.showinfo(
-                "Öppning i FSL avstängd",
+                "Opening in FSL disabled",
                 WINDOWS_FSL_DISABLED_MESSAGE,
                 parent=self,
             )
@@ -5673,9 +5673,9 @@ class CoregBatchApp(tk.Tk):
 
             if not checkerboard_files:
                 answer = messagebox.askyesno(
-                    "Checkerboard QC saknas",
-                    "Det finns inga checkerboard-QC-filer för vald session ännu.\n\n"
-                    "Vill du skapa dem nu?"
+                    "Checkerboard QC missing",
+                    "There are no checkerboard QC files for the selected session yet.\n\n"
+                    "Do you want to create them now?"
                 )
 
                 if answer:
@@ -5686,7 +5686,7 @@ class CoregBatchApp(tk.Tk):
             viewer = find_fsl_viewer_executable()
             if viewer is None:
                 raise RuntimeError(
-                    "Hittade ingen FSL-visare. Testade: fsleyes, fslview_deprecated, fslview."
+                    "No FSL viewer found. Tried: fsleyes, fslview_deprecated, fslview."
                 )
 
             reference_file = find_reference_t1_for_session(root_path, session_path)
@@ -5700,19 +5700,19 @@ class CoregBatchApp(tk.Tk):
             subprocess.Popen([viewer] + files_to_open)
 
             self.status_text.set(
-                f"Öppnade {len(files_to_open)} fil(er) med checkerboard QC för {selection}."
+                f"Opened {len(files_to_open)} checkerboard QC file(s) for the selected session {selection}."
             )
 
-            self.log(f"Öppnade checkerboard QC i FSL: {selection}")
+            self.log(f"Opened checkerboard QC in FSL: {selection}")
             for path in files_to_open:
                 self.log(f"  {path}")
             self.log("")
 
         except Exception as exc:
-            self.status_text.set(f"Fel vid öppning av checkerboard QC: {exc}")
+            self.status_text.set(f"Error opening checkerboard QC: {exc}")
             messagebox.showerror(
                 "Error",
-                f"{exc}\n\nDetaljer:\n{traceback.format_exc()}"
+                f"{exc}\n\nDetails:\n{traceback.format_exc()}"
             )
         
 
@@ -5722,9 +5722,9 @@ class CoregBatchApp(tk.Tk):
         """
 
         if running_on_windows():
-            self.status_text.set("Kan inte öppna NIfTI-bilder i FSL när programmet körs nativt i Windows.")
+            self.status_text.set("Cannot open NIfTI images in FSL when the program is running natively on Windows.")
             messagebox.showinfo(
-                "Öppning i FSL avstängd",
+                "Opening in FSL disabled",
                 WINDOWS_FSL_DISABLED_MESSAGE,
                 parent=self,
             )
@@ -5734,14 +5734,14 @@ class CoregBatchApp(tk.Tk):
         session_path_str = self.session_map.get(selection, "")
 
         if not session_path_str:
-            messagebox.showwarning("Ingen session vald", "Välj en session först.")
+            messagebox.showwarning("No session selected", "Please select a session first.")
             return
 
         try:
             viewer = find_fsl_viewer_executable()
             if viewer is None:
                 raise RuntimeError(
-                    "Hittade ingen FSL-visare. Testade: fsleyes, fslview_deprecated, fslview."
+                    "No FSL viewer found. Tried: fsleyes, fslview_deprecated, fslview.."
                 )
 
             root_path = Path(self.root_dir.get().strip())
@@ -5752,22 +5752,22 @@ class CoregBatchApp(tk.Tk):
 
             if not coreg_files:
                 raise FileNotFoundError(
-                    "Hittade inga färdiga coregistrerade filer för den här sessionen."
+                    "No completed coregistered files found for this session."
                 )
 
             subprocess.Popen([viewer] + [str(p) for p in nifti_files])
 
             self.status_text.set(
-                f"Öppnade {len(nifti_files)} fil(er) i FSL för sessionen {selection}."
+                f"Opened {len(nifti_files)} file(s) in FSL for session {selection}."
             )
-            self.log(f"Öppnade T1 + coreg i FSL: {selection}")
+            self.log(f"Opened T1 + coreg in FSL: {selection}")
             for path in nifti_files:
                 self.log(f"  {path}")
             self.log("")
 
         except Exception as exc:
-            self.status_text.set(f"Fel vid öppning i FSL: {exc}")
-            messagebox.showerror("Error", f"{exc}\n\nDetaljer:\n{traceback.format_exc()}")
+            self.status_text.set(f"Error opening in FSL: {exc}")
+            messagebox.showerror("Error", f"{exc}\n\nDetails:\n{traceback.format_exc()}")
 
     def set_controls_running(self, running: bool) -> None:
         """
@@ -5796,7 +5796,7 @@ class CoregBatchApp(tk.Tk):
             return
 
         path = filedialog.askdirectory(
-            title = "Välj rotmappen som innehåller sub-*/ses-*",
+            title = "Select the root folder containing sub-*/ses-*",
             initialdir = "/mnt/c/Users"
             )
 
@@ -5826,8 +5826,8 @@ class CoregBatchApp(tk.Tk):
         self.max_workers_var.set(str(self.recommended_cpu_workers))
         self.converter_workers_var.set(str(self.recommended_cpu_workers))
 
-        self.status_text.set("Välj rotmappen som innehåller sub-*/ses-* och tryck Run.")
-        self.current_item_text.set("Ingen körning aktiv.")
+        self.status_text.set("Select the root folder containing sub-*/ses-* and click Run.")
+        self.current_item_text.set("No active run.")
         self.progress_value.set(0.0)
         
 
@@ -5857,7 +5857,7 @@ class CoregBatchApp(tk.Tk):
 
         root = self.root_dir.get().strip()
         if not root:
-            raise ValueError("Välj rotmappen som innehåller sub-*/ses-*.")
+            raise ValueError("Select the root folder containing sub-*/ses-*.")
 
         root_path = Path(root)
         if not root_path.exists():
@@ -5898,7 +5898,7 @@ class CoregBatchApp(tk.Tk):
 
                 elif event_type == "done":
                     self.set_controls_running(False)
-                    self.set_busy(False, "Ingen körning aktiv.")
+                    self.set_busy(False, "No active run.")
 
                     summary_path = payload["summary_path"]
                     similarity_metrics_path = payload.get("similarity_metrics_path")
@@ -5908,12 +5908,12 @@ class CoregBatchApp(tk.Tk):
                     elapsed_time = payload.get("elapsed_time", "okänd tid")
 
                     self.status_text.set(
-                        "Klart. "
-                        f"Total tid: {elapsed_time}. "
-                        f"Bearbetade registreringar: {processed_count}, "
-                        f"hoppade över befintliga: {skipped_count}, "
-                        f"misslyckade sessioner: {failed_count}. "
-                        f"Sammanfattning: {summary_path}. "
+                        "Done. "
+                        f"Total time: {elapsed_time}. "
+                        f"Processed registrations: {processed_count}, "
+                        f"Skipped existing: {skipped_count}, "
+                        f"Failed sessions: {failed_count}. "
+                        f"Summary: {summary_path}. "
                         f"Similarity metrics: {similarity_metrics_path}"
                     )
 
@@ -5924,44 +5924,44 @@ class CoregBatchApp(tk.Tk):
                         self.destroy()
                     else:
                         messagebox.showinfo(
-                            "Klart",
-                            "Batch-coregistrering klar.\n\n"
-                            f"Total tid: {elapsed_time}\n"
-                            f"Bearbetade registreringar: {processed_count}\n"
-                            f"Hoppade över befintliga: {skipped_count}\n"
-                            f"Misslyckade sessioner: {failed_count}\n\n"
-                            f"Sammanfattning:\n{summary_path}\n\n"
+                            "Done",
+                            "Batch coregistration completed.\n\n"
+                            f"Total time: {elapsed_time}\n"
+                            f"Processed registrations: {processed_count}\n"
+                            f"Skipped existing registrations: {skipped_count}\n"
+                            f"Failed sessions: {failed_count}\n\n"
+                            f"Summary:\n{summary_path}\n\n"
                             f"Similarity metrics:\n{similarity_metrics_path}"
                         )
 
                 elif event_type == "metrics_done":
                     self.set_controls_running(False)
-                    self.set_busy(False, "Ingen körning aktiv.")
+                    self.set_busy(False, "No active run.")
 
                     similarity_metrics_path = payload["similarity_metrics_path"]
                     row_count = payload["row_count"]
 
                     self.status_text.set(
-                        f"Similarity metrics Excel skapad med {row_count} rad(er): "
+                        f"Excel file with similarity metrics created with {row_count} row(s): "
                         f"{similarity_metrics_path}"
                     )
 
                     self.log(
-                        f"Similarity metrics Excel skapad med {row_count} rad(er): "
+                        f"Excel file with similarity metrics created with {row_count} row(s): "
                         f"{similarity_metrics_path}"
                     )
                     self.log("")
 
                     messagebox.showinfo(
-                        "Similarity metrics klar",
-                        "Similarity metrics Excel skapad.\n\n"
-                        f"Antal rader: {row_count}\n\n"
-                        f"Fil:\n{similarity_metrics_path}"
+                        "Similarity metrics completed",
+                        "Excel file with similarity metrics created.\n\n"
+                        f"Number of rows: {row_count}\n\n"
+                        f"File:\n{similarity_metrics_path}"
                     )
 
                 elif event_type == "checkerboard_done":
                     self.set_controls_running(False)
-                    self.set_busy(False, "Ingen körning aktiv.")
+                    self.set_busy(False, "No active run.")
 
                     selection = payload["selection"]
                     reference_file = payload.get("reference_file")
@@ -5969,11 +5969,11 @@ class CoregBatchApp(tk.Tk):
                     items = payload.get("items", [])
 
                     self.status_text.set(
-                        f"Checkerboard QC skapad för {selection}. "
-                        f"Antal filer: {len(checkerboard_files)}."
+                        f"Checkerboard QC created for {selection}. "
+                        f"Number of files: {len(checkerboard_files)}."
                     )
 
-                    self.log(f"Checkerboard QC skapad för {selection}:")
+                    self.log(f"Checkerboard QC created for {selection}:")
                     for item in items:
                         self.log(f"  Reference: {item.get('reference_file')}")
                         self.log(f"  Registered: {item.get('registered_file')}")
@@ -5984,21 +5984,21 @@ class CoregBatchApp(tk.Tk):
 
                     if running_on_windows():
                         self.status_text.set(
-                            "Checkerboard QC skapades, men öppning i FSL är avstängd på Windows."
+                            "Checkerboard QC was created, but opening in FSL is disabled on Windows."
                         )
                         messagebox.showinfo(
-                            "Checkerboard QC klar",
-                            "Checkerboard QC skapades.\n\n"
-                            f"Antal filer: {len(checkerboard_files)}\n\n"
-                            "Programmet körs nativt på Windows, så bilderna öppnas inte i FSL.",
+                          "Checkerboard QC complete",
+                            "Checkerboard QC was created.\n\n"
+                            f"Number of files: {len(checkerboard_files)}\n\n"
+                            "The program is running natively on Windows, so the images will not be opened in FSL.",
                             parent=self,
                         )
                     else:
                         answer = messagebox.askyesno(
-                            "Checkerboard QC klar",
-                            "Checkerboard QC skapad.\n\n"
-                            f"Antal filer: {len(checkerboard_files)}\n\n"
-                            "Vill du öppna dem i FSL nu?"
+                            "Checkerboard QC complete",
+                            "Checkerboard QC created.\n\n"
+                            f"Number of files: {len(checkerboard_files)}\n\n"
+                            "Do you want to open them in FSL now?"
                         )
 
                         if answer:
@@ -6006,7 +6006,7 @@ class CoregBatchApp(tk.Tk):
                                 viewer = find_fsl_viewer_executable()
                                 if viewer is None:
                                     raise RuntimeError(
-                                        "Hittade ingen FSL-visare. Testade: fsleyes, "
+                                        "No FSL viewer was found. Tried: fsleyes, "
                                         "fslview_deprecated, fslview."
                                     )
 
@@ -6020,21 +6020,21 @@ class CoregBatchApp(tk.Tk):
                                 subprocess.Popen([viewer] + files_to_open)
 
                                 self.status_text.set(
-                                    f"Öppnade checkerboard QC i FSL för {selection}."
+                                    f"Opened checkerboard QC in FSL for {selection}."
                                 )
 
                             except Exception as exc:
                                 self.status_text.set(
-                                    f"Checkerboard skapades, men kunde inte öppnas i FSL: {exc}"
+                                    f"Checkerboard QC was created, but could not be opened in FSL: {exc}"
                                 )
                                 messagebox.showerror(
                                     "FSL error",
-                                    f"{exc}\n\nDetaljer:\n{traceback.format_exc()}"
+                                    f"{exc}\n\nDetails:\n{traceback.format_exc()}"
                                 )
 
                 elif event_type == "checkerboard_all_done":
                     self.set_controls_running(False)
-                    self.set_busy(False, "Ingen körning aktiv.")
+                    self.set_busy(False, "No active run.")
 
                     results = payload["results"]
                     processed_sessions = payload["processed_sessions"]
@@ -6042,16 +6042,16 @@ class CoregBatchApp(tk.Tk):
                     checkerboard_count = payload["checkerboard_count"]
 
                     self.status_text.set(
-                        "Checkerboard QC klar. "
-                        f"Sessioner klara: {processed_sessions}, "
-                        f"misslyckade: {failed_sessions}, "
-                        f"checkerboard-filer: {checkerboard_count}."
+                        "Checkerboard QC complete. "
+                        f"Completed sessions: {processed_sessions}, "
+                        f"failed: {failed_sessions}, "
+                        f"checkerboard files: {checkerboard_count}."
                     )
 
-                    self.log("Checkerboard QC klar för alla färdiga sessioner:")
-                    self.log(f"  Sessioner klara: {processed_sessions}")
-                    self.log(f"  Misslyckade sessioner: {failed_sessions}")
-                    self.log(f"  Checkerboard-filer: {checkerboard_count}")
+                    self.log("Checkerboard QC complete for all completed sessions:")
+                    self.log(f"  Completed sessions: {processed_sessions}")
+                    self.log(f"  Failed sessions: {failed_sessions}")
+                    self.log(f"  Checkerboard files: {checkerboard_count}")
                     self.log("")
 
                     for item in results:
@@ -6062,76 +6062,76 @@ class CoregBatchApp(tk.Tk):
                         )
 
                         if item.get("status") == "failed":
-                            self.log(f"    FEL: {item.get('error')}")
+                            self.log(f"    ERROR: {item.get('error')}")
 
                     self.log("")
 
                     messagebox.showinfo(
-                        "Checkerboard QC klar",
-                        "Checkerboard QC skapad för alla färdiga sessioner.\n\n"
-                        f"Sessioner klara: {processed_sessions}\n"
-                        f"Misslyckade sessioner: {failed_sessions}\n"
-                        f"Checkerboard-filer: {checkerboard_count}\n\n"
-                        "Filerna ligger i:\n"
+                        "Checkerboard QC complete",
+                        "Checkerboard QC created for all completed sessions.\n\n"
+                        f"Completed sessions: {processed_sessions}\n"
+                        f"Failed sessions: {failed_sessions}\n"
+                        f"Checkerboard files: {checkerboard_count}\n\n"
+                        "Files are located in:\n"
                         "derivatives/registration/checkerboard_qc/sub-*/ses-*"
                     )
 
 
                 elif event_type == "checkerboard_all_error":
                     self.set_controls_running(False)
-                    self.set_busy(False, "Ingen körning aktiv.")
+                    self.set_busy(False, "No active run.")
 
                     error_message = payload["message"]
                     error_traceback = payload["traceback"]
 
-                    self.status_text.set(f"Fel vid checkerboard QC: {error_message}")
+                    self.status_text.set(f"Error during checkerboard QC: {error_message}")
 
                     messagebox.showerror(
                         "Checkerboard QC error",
-                        f"{error_message}\n\nDetaljer:\n{error_traceback}"
+                        f"{error_message}\n\nDetails:\n{error_traceback}"
                     )
 
                 elif event_type == "checkerboard_error":
                     self.set_controls_running(False)
-                    self.set_busy(False, "Ingen körning aktiv.")
+                    self.set_busy(False, "No active run.")
 
                     error_message = payload["message"]
                     error_traceback = payload["traceback"]
 
-                    self.status_text.set(f"Fel vid checkerboard QC: {error_message}")
+                    self.status_text.set(f"Error during checkerboard QC: {error_message}")
 
                     messagebox.showerror(
                         "Checkerboard QC error",
-                        f"{error_message}\n\nDetaljer:\n{error_traceback}"
+                        f"{error_message}\n\nDetails:\n{error_traceback}"
                     )
 
                 elif event_type == "metrics_error":
                     self.set_controls_running(False)
-                    self.set_busy(False, "Ingen körning aktiv.")
+                    self.set_busy(False, "No active run.")
 
                     error_message = payload["message"]
                     error_traceback = payload["traceback"]
 
-                    self.status_text.set(f"Fel vid similarity metrics: {error_message}")
+                    self.status_text.set(f"Error during similarity metrics: {error_message}")
 
                     messagebox.showerror(
                         "Similarity metrics error",
-                        f"{error_message}\n\nDetaljer:\n{error_traceback}"
+                        f"{error_message}\n\nDetails:\n{error_traceback}"
                     )
 
                 elif event_type == "error":
                     self.set_controls_running(False)
-                    self.set_busy(False, "Ingen körning aktiv.")
+                    self.set_busy(False, "No active run.")
 
                     error_message = payload["message"]
                     error_traceback = payload["traceback"]
 
-                    self.status_text.set(f"Fel: {error_message}")
+                    self.status_text.set(f"Error: {error_message}")
 
                     if self.close_when_done:
                         self.destroy()
                     else:
-                        messagebox.showerror("Error", f"{error_message}\n\nDetaljer:\n{error_traceback}")
+                        messagebox.showerror("Error", f"{error_message}\n\nDetails:\n{error_traceback}")
 
         except queue.Empty:
             pass
@@ -6153,8 +6153,8 @@ class CoregBatchApp(tk.Tk):
         try:
             root_path = self.validate_inputs()
         except Exception as exc:
-            self.status_text.set(f"Fel: {exc}")
-            messagebox.showerror("Error", f"{exc}\n\nDetaljer:\n{traceback.format_exc()}")
+            self.status_text.set(f"Error: {exc}")
+            messagebox.showerror("Error", f"{exc}\n\nDetails:\n{traceback.format_exc()}")
             return
 
         run_t2 = bool(self.run_t2_var.get())
@@ -6171,7 +6171,7 @@ class CoregBatchApp(tk.Tk):
         self.runtime_control = RuntimeControl(cancel_event=self.cancel_event)
         self.set_controls_running(True)
         self.progress_value.set(0.0)
-        self.set_busy(True, "Startar batch-körning...")
+        self.set_busy(True, "Starting batch run...")
 
         self.worker_thread = threading.Thread(
             target=self._worker_run_processing,
@@ -6215,7 +6215,7 @@ class CoregBatchApp(tk.Tk):
 
             all_sessions = find_subject_session_dirs(root_path)
             if not all_sessions:
-                raise RuntimeError("Hittade inga mappar som följer mönstret sub-*/ses-*.")
+                raise RuntimeError("No folders matching the pattern sub-*/ses-* were found.")
 
             summary_root = root_path / "derivatives" / "registration"
             summary_root.mkdir(parents=True, exist_ok=True)
@@ -6227,10 +6227,10 @@ class CoregBatchApp(tk.Tk):
             }
 
             if validate_bids:
-                self.ui_queue.put(("status", "Kör BIDS-validering..."))
-                self.ui_queue.put(("busy", (True, "Validerar BIDS-dataset innan coregistrering...")))
-                self.ui_queue.put(("log", "Kör BIDS Validator endast på derivatives/registration..."))
-                #self.ui_queue.put(("log", f"Validerar mapp: {registration_root}"))
+                self.ui_queue.put(("status", "Running BIDS validation..."))
+                self.ui_queue.put(("busy", (True, "Validating BIDS dataset before coregistration...")))
+                self.ui_queue.put(("log", "Running BIDS Validator only on derivatives/registration..."))
+                # self.ui_queue.put(("log", f"Validating folder: {registration_root}"))
                 self.ui_queue.put(("log", f"Prune derivatives/sourcedata: {BIDS_VALIDATOR_PRUNE_DERIVATIVES}"))
 
                 registration_root = root_path / "derivatives" / "registration"
@@ -6242,7 +6242,7 @@ class CoregBatchApp(tk.Tk):
 
                 self.ui_queue.put((
                     "log",
-                    f"Tog bort {removed_gradients} gamla .bval/.bvec-filer för coreg-DWI derivatives."
+                    f"Removed {removed_gradients} old .bval/.bvec files for coregistered DWI derivatives"
                 ))
 
                 # Viktigt: gammal work-mapp gör att BIDS Validator stoppar.
@@ -6253,7 +6253,7 @@ class CoregBatchApp(tk.Tk):
 
                 self.ui_queue.put((
                     "log",
-                    f"Uppdaterade required derivative keys i {updated_sidecars} gamla coreg-JSON-filer."
+                    f"Updated required derivative keys in {updated_sidecars} old coreg JSON files."
                 ))
 
                 validation = run_bids_validator(
@@ -6278,8 +6278,8 @@ class CoregBatchApp(tk.Tk):
                     "report_file": str(bids_report_path),
                 }
 
-                self.ui_queue.put(("log", f"BIDS Validator returncode: {validation['returncode']}"))
-                self.ui_queue.put(("log", f"BIDS Validator rapport: {bids_report_path}"))
+                self.ui_queue.put(("log", f"BIDS Validator return code: {validation['returncode']}"))
+                self.ui_queue.put(("log", f"BIDS Validator report: {bids_report_path}"))
 
                 if not validation["valid"]:
                     output_preview = validation.get("output", "")
@@ -6287,33 +6287,33 @@ class CoregBatchApp(tk.Tk):
                         output_preview = output_preview[:4000] + "\n\n[truncated]"
 
                     raise RuntimeError(
-                        "BIDS-validering misslyckades. Coregistreringen stoppades.\n\n"
-                        f"Rapport:\n{bids_report_path}\n\n"
-                        f"Validator-output:\n{output_preview}"
+                        "BIDS validation failed. Coregistration has been stopped.\n\n"
+                        f"Report:\n{bids_report_path}\n\n"
+                        f"Validator output:\n{output_preview}"
                     )
 
-                self.ui_queue.put(("log", "BIDS-validering OK. Fortsätter med coregistrering."))
+                self.ui_queue.put(("log", "BIDS validation OK. Continuing with coregistration."))
                 self.ui_queue.put(("log", ""))
             else:
-                self.ui_queue.put(("log", "BIDS-validering är avstängd för denna körning."))
+                self.ui_queue.put(("log", "BIDS validation is disabled for this run."))
                 self.ui_queue.put(("log", ""))
 
             work_root = root_path / "derivatives" / "registration_work"
             work_root.mkdir(parents=True, exist_ok=True)
 
-            self.ui_queue.put(("status", f"Hittade {len(all_sessions)} session(er). Kör coregistrering..."))
-            self.ui_queue.put(("busy", (True, f"Kör coregistrering för {len(all_sessions)} session(er)...")))
-            self.ui_queue.put(("log", f"Rotmapp: {root_path}"))
-            self.ui_queue.put(("log", f"Starttid: {batch_started_at.isoformat(timespec='seconds')}"))
+            self.ui_queue.put(("status", f"Found {len(all_sessions)} session(s). Running coregistration..."))
+            self.ui_queue.put(("busy", (True, f"Running coregistration for {len(all_sessions)} session(s)...")))
+            self.ui_queue.put(("log", f"Root folder: {root_path}"))
+            self.ui_queue.put(("log", f"Start time: {batch_started_at.isoformat(timespec='seconds')}"))
             self.ui_queue.put(("log", f"Default cost (PET/T2): {DEFAULT_COST}"))
             self.ui_queue.put(("log", f"Diffusion cost: {diffusion_cost}"))
             self.ui_queue.put(("log", f"Perfusion cost: {perfusion_cost}"))
             self.ui_queue.put(("log", f"Default DOF: {DEFAULT_DOF}"))
-            self.ui_queue.put(("log", f"Använd kontrast: {use_contrast}"))
-            self.ui_queue.put(("log", f"Kör T2 -> T1: {run_t2}"))
-            self.ui_queue.put(("log", f"Kör diffusion -> T1: {run_diffusion}"))
-            self.ui_queue.put(("log", f"Kör perfusion -> T1: {run_perfusion}"))
-            self.ui_queue.put(("log", f"Parallella sessioner: {max_workers}"))
+            self.ui_queue.put(("log", f"Use contrast: {use_contrast}"))
+            self.ui_queue.put(("log", f"Run T2 -> T1: {run_t2}"))
+            self.ui_queue.put(("log", f"Run diffusion -> T1: {run_diffusion}"))
+            self.ui_queue.put(("log", f"Run perfusion -> T1: {run_perfusion}"))
+            self.ui_queue.put(("log", f"Parallel sessions: {max_workers}"))
             self.ui_queue.put(("log", ""))
 
             processed_count = 0
@@ -6340,7 +6340,7 @@ class CoregBatchApp(tk.Tk):
 
                     self.ui_queue.put((
                         "current",
-                        f"Kör nu: {subject}/{session} ({session_dir})"
+                        f"Run now: {subject}/{session} ({session_dir})"
                     ))
                     self.ui_queue.put((
                         "log",
@@ -6371,8 +6371,8 @@ class CoregBatchApp(tk.Tk):
                     session_dir = future_map[future]
                     completed_sessions += 1
 
-                    self.ui_queue.put(("status", f"Klart med session {completed_sessions}/{total_sessions}: {session_dir}"))
-                    self.ui_queue.put(("busy", (True, f"Bearbetat {completed_sessions} av {total_sessions} sessioner. Senast klar: {session_dir}")))
+                    self.ui_queue.put(("status", f"Completed session {completed_sessions}/{total_sessions}: {session_dir}"))
+                    self.ui_queue.put(("busy", (True, f"Processed {completed_sessions} of {total_sessions} sessions. Last completed: {session_dir}")))
                     self.ui_queue.put(("log", f"[{completed_sessions}/{total_sessions}] {session_dir}"))
 
                     try:
@@ -6429,7 +6429,7 @@ class CoregBatchApp(tk.Tk):
                             "status": "cancelled",
                             "error": str(exc),
                         })
-                        self.ui_queue.put(("log", f"  AVBRUTEN: {exc}"))
+                        self.ui_queue.put(("log", f"  CANCELLED: {exc}"))
                         self.ui_queue.put(("log", ""))
 
                     except Exception as exc:
