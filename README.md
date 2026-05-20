@@ -1,5 +1,10 @@
 # BIDS-Conveter-CO-REG
 
+**Compatibility**
+This program is built using python 3.14.2
+Using it, or the executeble through a terminal with a 
+different version might cause problems.
+
 **Using the program**
 In this project you will find a foldder named APP, and inside different versions
 of the app version of this program can be fund. 
