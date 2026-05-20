@@ -5,6 +5,9 @@ This program is built using python 3.14.2
 Using it, or the executeble through a terminal with a 
 different version might cause problems.
 
+ubunty 22.04
+
+
 **Using the program**
 In this project you will find a foldder named APP, and inside different versions
 of the app version of this program can be fund. 
