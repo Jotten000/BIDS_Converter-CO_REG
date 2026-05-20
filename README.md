@@ -1,7 +1,14 @@
 # BIDS-Conveter-CO-REG
 
+**Using the program**
+In this project you will find a foldder named APP, and inside different versions
+of the app version of this program can be fund. 
+Under each opperating system folder there is a "dist", and inside is the app.
 
-
+The program will open on the coregistration page. To switch pages, open the "Mode" 
+menu at the topp and select "Bids Conversion". 
+In that page, enter your input folder, your output folder, and any setting you
+might want to change. Then press "Run".
 
 **Instructions for building the project as an app:**
 The program is made to be packaged into apps for
