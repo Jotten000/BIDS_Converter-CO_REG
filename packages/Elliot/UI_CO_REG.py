@@ -4431,11 +4431,61 @@ class CoregBatchApp(tk.Tk):
         app_menu = tk.Menu(menubar, tearoff=0)
         app_menu.add_command(label="Select/change FSL path", command=self.select_fsl_manually)
         app_menu.add_separator()
+        app_menu.add_command(label="Referencer", command=self.open_references_file)
+        app_menu.add_separator()
         app_menu.add_command(label="Exit", command=self.request_exit)
         menubar.add_cascade(label="App", menu=app_menu)
 
         self.config(menu=menubar)
 
+    def open_references_file(self) -> None:
+        """
+        Öppnar references.txt med standardprogrammet för textfiler.
+        Filen ska ligga i samma mapp som programmet, eller i aktuell arbetsmapp.
+        """
+
+        try:
+            possible_paths = []
+
+            # Om programmet är packat som .exe/app med PyInstaller
+            if getattr(sys, "frozen", False):
+                possible_paths.append(Path(sys.executable).resolve().parent / "references.txt")
+
+                meipass = getattr(sys, "_MEIPASS", None)
+                if meipass:
+                    possible_paths.append(Path(meipass).resolve() / "references.txt")
+
+            # Om programmet körs som vanlig Python-fil
+            possible_paths.append(Path(__file__).resolve().parent / "references.txt")
+
+            # Fallback: aktuell arbetsmapp
+            possible_paths.append(Path.cwd() / "references.txt")
+
+            for path in possible_paths:
+                if path.exists():
+                    open_file_with_default_app(path)
+                    self.status_text.set(f"Opened references file: {path}")
+                    self.log(f"Opened references file: {path}")
+                    return
+
+            searched_paths = "\n".join(str(path) for path in possible_paths)
+
+            messagebox.showerror(
+                "References file missing",
+                "Could not find references.txt.\n\n"
+                "Place the file in the same folder as the program.\n\n"
+                f"Searched here:\n{searched_paths}",
+                parent=self,
+            )
+
+        except Exception as exc:
+            self.status_text.set(f"Error opening references file: {exc}")
+            messagebox.showerror(
+                "Error",
+                f"{exc}\n\nDetails:\n{traceback.format_exc()}",
+                parent=self,
+            )
+    
     def _widget_exists(self, widget: Any) -> bool:
         """
         Kontrollerar om en Tkinter-widget finns och fortfarande är aktiv.
