@@ -1,79 +1,105 @@
 # =============================================================================
-# External dependencies, licences and acknowledgements
+# Third-party dependencies, licences and acknowledgements
 # =============================================================================
 #
-# This program uses Python standard-library modules and the external packages
-# listed below. The standard-library modules, such as json, os, sys, pathlib,
-# subprocess, threading, tkinter, etc., are part of Python itself.
+# This application is packaged with Python and several third-party Python
+# packages. FSL is NOT packaged with the application.
 #
-# External software/packages used:
+# Python standard library
+# -----------------------
+# The following imported modules are part of Python's standard library:
 #
-# 1. FSL / FLIRT
-#    This program can call FSL FLIRT through Nipype for image coregistration.
-#    FSL is not bundled with this script. Users must install FSL separately and
-#    follow the FSL licence terms.
+# json, re, shutil, subprocess, threading, queue, traceback, os, shlex, signal,
+# sys, time, datetime, pathlib, typing, concurrent.futures, dataclasses,
+# and tkinter.
 #
-#    Important licence note:
-#    Most of FSL is free for non-commercial use only. Commercial use requires
-#    a separate licence from Oxford University Innovation.
+# If this application is distributed as a standalone app that includes the
+# Python interpreter and standard library, the Python Software Foundation
+# licence should be included with the distributed application.
 #
-#    Licence:
-#    https://fsl.fmrib.ox.ac.uk/fsl/docs/license.html
-#
-#
-# 2. NumPy
-#    Used for numerical calculations and array handling.
-#
-#    Licence:
-#    NumPy is distributed under a BSD-style licence.
-#    https://numpy.org/doc/stable/license.html
-#
-#    Citation:
-#    Harris, C. R., Millman, K. J., van der Walt, S. J., et al. (2020).
-#    Array programming with NumPy. Nature, 585, 357-362.
-#    https://doi.org/10.1038/s41586-020-2649-2
+# Python licence:
+# https://docs.python.org/3/license.html
 #
 #
-# 3. NiBabel
-#    Used for reading and handling neuroimaging file formats such as NIfTI.
+# Packaged third-party Python packages
+# ------------------------------------
 #
-#    Licence:
-#    NiBabel is licensed under the MIT licence. Some included code is licensed
-#    under the BSD licence.
-#    https://nipy.org/nibabel/
+# NumPy
+# Used for numerical calculations and array handling.
+# NumPy is distributed under a BSD-style licence.
 #
+# Licence:
+# https://numpy.org/doc/stable/license.html
 #
-# 4. Nipype
-#    Used as a Python interface to neuroimaging tools, including FSL.
-#
-#    Licence:
-#    Current Nipype versions are licensed under the Apache License 2.0.
-#    Older versions before release 0.12 were licensed under a BSD licence.
-#    https://github.com/nipy/nipype/blob/master/LICENSE
-#
-#    Citation:
-#    Gorgolewski, K., Burns, C. D., Madison, C., Clark, D.,
-#    Halchenko, Y. O., Waskom, M. L., & Ghosh, S. S. (2011).
-#    Nipype: a flexible, lightweight and extensible neuroimaging data
-#    processing framework in Python. Frontiers in Neuroinformatics, 5, 13.
-#    https://doi.org/10.3389/fninf.2011.00013
+# Citation:
+# Harris, C. R., Millman, K. J., van der Walt, S. J., Gommers, R.,
+# Virtanen, P., Cournapeau, D., Wieser, E., Taylor, J., Berg, S.,
+# Smith, N. J., et al. (2020).
+# Array programming with NumPy. Nature, 585, 357-362.
+# https://doi.org/10.1038/s41586-020-2649-2
 #
 #
-# 5. openpyxl
-#    Used for writing Excel files with coregistration similarity metrics.
+# NiBabel
+# Used for reading and handling neuroimaging file formats such as NIfTI.
+# NiBabel is licensed under the MIT licence. Some included code may be
+# licensed under BSD-style licences.
 #
-#    Licence:
-#    openpyxl is licensed under the MIT/Expat licence.
-#    https://openpyxl.readthedocs.io/en/stable/
-#
-#
-# 6. Internal/local module
+# Licence:
+# https://nipy.org/nibabel/
 #
 #
+# Nipype
+# Used as a Python interface to neuroimaging tools, including FSL.
+# Current Nipype versions are licensed under the Apache License 2.0.
 #
-# Copyright/licence note:
-# This comment documents external dependencies and their licences. It does not
-# mean that the source code of those packages is included in this program.
-# If this program is redistributed together with any external package or binary,
-# the corresponding licence terms and licence files must also be followed.
+# Licence:
+# https://github.com/nipy/nipype/blob/master/LICENSE
+#
+# Citation:
+# Gorgolewski, K., Burns, C. D., Madison, C., Clark, D.,
+# Halchenko, Y. O., Waskom, M. L., & Ghosh, S. S. (2011).
+# Nipype: a flexible, lightweight and extensible neuroimaging data
+# processing framework in Python. Frontiers in Neuroinformatics, 5, 13.
+# https://doi.org/10.3389/fninf.2011.00013
+#
+#
+# openpyxl
+# Used for writing Excel files with coregistration similarity metrics.
+# openpyxl is licensed under the MIT/Expat licence.
+#
+# Licence:
+# https://openpyxl.readthedocs.io/en/stable/
+#
+#
+# External dependency not packaged with the app
+# --------------------------------------------
+#
+# FSL / FLIRT
+# This application can call FSL FLIRT for image coregistration, but FSL is not
+# included or redistributed with this application. Users must install FSL
+# separately and must follow the FSL licence terms.
+#
+# Important FSL licence note:
+# Most of FSL is free for non-commercial use only. Commercial use requires a
+# separate licence from Oxford University Innovation.
+#
+# FSL licence:
+# https://fsl.fmrib.ox.ac.uk/fsl/docs/license.html
+#
+#
+# Internal/local project module
+# -----------------------------
+#
+#
+#
+# Distribution note
+# -----------------
+#
+# - Python
+# - NumPy
+# - NiBabel
+# - Nipype
+# - openpyxl
+# - any other dependencies that are bundled automatically during packaging
+#
 # =============================================================================
