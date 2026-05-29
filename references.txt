@@ -1,1 +1,79 @@
-hellow world
+# =============================================================================
+# External dependencies, licences and acknowledgements
+# =============================================================================
+#
+# This program uses Python standard-library modules and the external packages
+# listed below. The standard-library modules, such as json, os, sys, pathlib,
+# subprocess, threading, tkinter, etc., are part of Python itself.
+#
+# External software/packages used:
+#
+# 1. FSL / FLIRT
+#    This program can call FSL FLIRT through Nipype for image coregistration.
+#    FSL is not bundled with this script. Users must install FSL separately and
+#    follow the FSL licence terms.
+#
+#    Important licence note:
+#    Most of FSL is free for non-commercial use only. Commercial use requires
+#    a separate licence from Oxford University Innovation.
+#
+#    Licence:
+#    https://fsl.fmrib.ox.ac.uk/fsl/docs/license.html
+#
+#
+# 2. NumPy
+#    Used for numerical calculations and array handling.
+#
+#    Licence:
+#    NumPy is distributed under a BSD-style licence.
+#    https://numpy.org/doc/stable/license.html
+#
+#    Citation:
+#    Harris, C. R., Millman, K. J., van der Walt, S. J., et al. (2020).
+#    Array programming with NumPy. Nature, 585, 357-362.
+#    https://doi.org/10.1038/s41586-020-2649-2
+#
+#
+# 3. NiBabel
+#    Used for reading and handling neuroimaging file formats such as NIfTI.
+#
+#    Licence:
+#    NiBabel is licensed under the MIT licence. Some included code is licensed
+#    under the BSD licence.
+#    https://nipy.org/nibabel/
+#
+#
+# 4. Nipype
+#    Used as a Python interface to neuroimaging tools, including FSL.
+#
+#    Licence:
+#    Current Nipype versions are licensed under the Apache License 2.0.
+#    Older versions before release 0.12 were licensed under a BSD licence.
+#    https://github.com/nipy/nipype/blob/master/LICENSE
+#
+#    Citation:
+#    Gorgolewski, K., Burns, C. D., Madison, C., Clark, D.,
+#    Halchenko, Y. O., Waskom, M. L., & Ghosh, S. S. (2011).
+#    Nipype: a flexible, lightweight and extensible neuroimaging data
+#    processing framework in Python. Frontiers in Neuroinformatics, 5, 13.
+#    https://doi.org/10.3389/fninf.2011.00013
+#
+#
+# 5. openpyxl
+#    Used for writing Excel files with coregistration similarity metrics.
+#
+#    Licence:
+#    openpyxl is licensed under the MIT/Expat licence.
+#    https://openpyxl.readthedocs.io/en/stable/
+#
+#
+# 6. Internal/local module
+#
+#
+#
+# Copyright/licence note:
+# This comment documents external dependencies and their licences. It does not
+# mean that the source code of those packages is included in this program.
+# If this program is redistributed together with any external package or binary,
+# the corresponding licence terms and licence files must also be followed.
+# =============================================================================
