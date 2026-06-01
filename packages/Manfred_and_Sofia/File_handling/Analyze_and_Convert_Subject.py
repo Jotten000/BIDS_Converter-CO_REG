@@ -152,6 +152,7 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
     # sort the list based on the StuddyDate tag in the first dcm file
     update_status("Sorting the list of folders in chronological order")
     path_list.sort(key=lambda x: x.get("date"))
+    amountOfFolders = str(len(path_list))
 
     if path_list == []:
         Print_func("No valid folders found")
@@ -289,8 +290,9 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
 
                         temp_Found_Empty_Thread = True
                         update_status("Converting to bids "
-                                      "| Started conversion nr: " 
-                                    + str(count_Conversions_Started))
+                                      "| Started conversion nr: (" 
+                                    + str(count_Conversions_Started) 
+                                    + " / " + amountOfFolders + ")")
                         time.sleep(0.1)
                     time.sleep(0.001)
             except Exception as e:
@@ -304,6 +306,6 @@ def iterate_Patient_Folders(Patient_Path , Output_Path,
             removedSub = Sub_List.Remove_Subject_from_list(tas[1])
             if not removedSub == False:
                 Print_func("Will not save " + removedSub + " in tables or participants.tsv")
-                Print_func("Please run it again, or delete it")
+                Print_func("Please menually delete these folders")
     if is_killed():
         Print_func("______________________________________________")
