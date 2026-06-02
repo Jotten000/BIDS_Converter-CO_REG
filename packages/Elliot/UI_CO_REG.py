@@ -153,6 +153,20 @@ processing framework in Python. Frontiers in Neuroinformatics, 5, 13.
 https://doi.org/10.3389/fninf.2011.00013
 
 
+Deno
+--------
+Used as a JavaScript/TypeScript runtime and/or command-line tool in the
+project.
+
+Deno is licensed under the MIT licence.
+
+Deno website:
+https://deno.com/
+
+Deno licence:
+https://github.com/denoland/deno/blob/main/LICENSE.md
+
+
 openpyxl
 --------
 Used for writing Excel files with coregistration similarity metrics.
@@ -191,6 +205,7 @@ Distribution note
 - NumPy
 - NiBabel
 - Nipype
+- Deno
 - openpyxl
 - any other dependencies that are bundled automatically during packaging
 
