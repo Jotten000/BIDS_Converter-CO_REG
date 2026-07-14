@@ -2,6 +2,15 @@
 Third-party dependencies, licences and acknowledgements
 =============================================================================
 
+This aplication was made by:
+
+Elliot Stralje      -     
+Sofia Remle         -       sofia.rem2004@gmail.com
+Manfred Engström    -       manfred@engstroom.se 
+
+=============================================================================
+
+
 This application is packaged with Python and several third-party Python
 packages. FSL is NOT packaged with the application.
 

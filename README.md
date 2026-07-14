@@ -36,6 +36,7 @@ pyinstaller \
   --name "Bids_and_coreg" \
   --icon=Prel_BIDS_icon.ico \
   main.py
+  
 
 For Windows, use the terminal command:
 pyinstaller `
@@ -50,6 +51,21 @@ pyinstaller `
   --name "Bids_and_coreg" `
   --icon "Prel_BIDS_icon.ico" `
   main.py
+
+For Linux, use the terminal command:
+Linux: 
+    python -m PyInstaller \
+      --collect-datas bidsschematools \
+      --collect-datas etelemetry \
+      --collect-all openpyxl \
+      --add-data "/home/**/miniconda3/envs/BIDS_and_coreg_linux/lib/python3.11/site-packages/ci_info/vendors.json:ci_info" \
+      --add-binary "$(which dcm2niix):." \
+      --add-binary "$CONDA_PREFIX/lib/libexpat.so.1:." \
+      --onedir \
+      --runtime-hook ./pyi_fix_stdio.py \
+      --clean \
+      --name "Bids_and_coreg_linux" \
+      main.py
 
 Remember to replace "--add-data" and "--add-binary" paths with your 
 coresponding paths to: deno, dcm2niix, and vendors.json

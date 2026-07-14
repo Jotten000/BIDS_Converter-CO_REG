@@ -91,6 +91,14 @@ THIRD_PARTY_DEPENDENCIES_TEXT = """=============================================
 Third-party dependencies, licences and acknowledgements
 =============================================================================
 
+This aplication was made by:
+
+Elliot Stralje      -     
+Sofia Remle         -       sofia.rem2004@gmail.com
+Manfred Engström    -       manfred@engstroom.se 
+
+=============================================================================
+
 This application is packaged with Python and several third-party Python
 packages. FSL is NOT packaged with the application.
 
@@ -4556,7 +4564,7 @@ class CoregBatchApp(tk.Tk):
         app_menu = tk.Menu(menubar, tearoff=0)
         app_menu.add_command(label="Select/change FSL path", command=self.select_fsl_manually)
         app_menu.add_separator()
-        app_menu.add_command(label="3rd party dependencies", command=self.show_third_party_dependencies)
+        app_menu.add_command(label="Licences and creddit", command=self.show_third_party_dependencies)
         app_menu.add_separator()
         app_menu.add_command(label="Exit", command=self.request_exit)
         menubar.add_cascade(label="App", menu=app_menu)
