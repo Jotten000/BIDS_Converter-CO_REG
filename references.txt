@@ -4,7 +4,7 @@ Third-party dependencies, licences and acknowledgements
 
 This aplication was made by:
 
-Elliot Stralje      -     
+Elliot Stralje      -       eliot@stralje.com 
 Sofia Remle         -       sofia.rem2004@gmail.com
 Manfred Engström    -       manfred@engstroom.se 
 
