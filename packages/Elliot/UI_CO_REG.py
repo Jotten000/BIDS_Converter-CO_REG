@@ -87,6 +87,139 @@ from packages.Manfred_and_Sofia.File_handling import Conversion_Handler
 
 APP_TITLE = "Batch coregistration of PET/T2 to T1 using Nipype + FSL"
 
+THIRD_PARTY_DEPENDENCIES_TEXT = """=============================================================================
+Third-party dependencies, licences and acknowledgements
+=============================================================================
+
+This aplication was made by:
+
+Elliot Stralje      -       eliot@stralje.com 
+Sofia Remle         -       sofia.rem2004@gmail.com
+Manfred Engström    -       manfred@engstroom.se 
+
+=============================================================================
+
+This application is packaged with Python and several third-party Python
+packages. FSL is NOT packaged with the application.
+
+Python standard library
+-----------------------
+The following imported modules are part of Python's standard library:
+
+json, re, shutil, subprocess, threading, queue, traceback, os, shlex, signal,
+sys, time, datetime, pathlib, typing, concurrent.futures, dataclasses,
+and tkinter.
+
+
+Python licence:
+---------------
+https://docs.python.org/3/license.html
+
+
+Packaged third-party Python packages
+------------------------------------
+
+NumPy
+-----
+Used for numerical calculations and array handling.
+NumPy is distributed under a BSD-style licence.
+
+Licence:
+https://numpy.org/doc/stable/license.html
+
+Citation:
+Harris, C. R., Millman, K. J., van der Walt, S. J., Gommers, R.,
+Virtanen, P., Cournapeau, D., Wieser, E., Taylor, J., Berg, S.,
+Smith, N. J., et al. (2020).
+Array programming with NumPy. Nature, 585, 357-362.
+https://doi.org/10.1038/s41586-020-2649-2
+
+
+NiBabel
+-------
+Used for reading and handling neuroimaging file formats such as NIfTI.
+NiBabel is licensed under the MIT licence. Some included code may be
+licensed under BSD-style licences.
+
+Licence:
+https://nipy.org/nibabel/
+
+
+Nipype
+------
+Used as a Python interface to neuroimaging tools, including FSL.
+Current Nipype versions are licensed under the Apache License 2.0.
+
+Licence:
+https://github.com/nipy/nipype/blob/master/LICENSE
+
+Citation:
+Gorgolewski, K., Burns, C. D., Madison, C., Clark, D.,
+Halchenko, Y. O., Waskom, M. L., & Ghosh, S. S. (2011).
+Nipype: a flexible, lightweight and extensible neuroimaging data
+processing framework in Python. Frontiers in Neuroinformatics, 5, 13.
+https://doi.org/10.3389/fninf.2011.00013
+
+
+Deno
+--------
+Used as a JavaScript/TypeScript runtime and/or command-line tool in the
+project.
+
+Deno is licensed under the MIT licence.
+
+Deno website:
+https://deno.com/
+
+Deno licence:
+https://github.com/denoland/deno/blob/main/LICENSE.md
+
+
+openpyxl
+--------
+Used for writing Excel files with coregistration similarity metrics.
+openpyxl is licensed under the MIT/Expat licence.
+
+Licence:
+https://openpyxl.readthedocs.io/en/stable/
+
+
+External dependency not packaged with the app
+--------------------------------------------
+
+FSL / FLIRT
+-----------
+This application can call FSL FLIRT for image coregistration, but FSL is not
+included or redistributed with this application. Users must install FSL
+separately and must follow the FSL licence terms.
+
+Important FSL licence note:
+Most of FSL is free for non-commercial use only. Commercial use requires a
+separate licence from Oxford University Innovation.
+
+FSL licence:
+https://fsl.fmrib.ox.ac.uk/fsl/docs/license.html
+
+
+Internal/local project module
+-----------------------------
+
+
+
+Distribution note
+-----------------
+
+- Python
+- NumPy
+- NiBabel
+- Nipype
+- Deno
+- openpyxl
+- any other dependencies that are bundled automatically during packaging
+
+============================================================================="""
+
+
 DEFAULT_COST = "normmi"
 DEFAULT_DOF = 6
 OVERWRITE_EXISTING = False
@@ -4431,12 +4564,72 @@ class CoregBatchApp(tk.Tk):
         app_menu = tk.Menu(menubar, tearoff=0)
         app_menu.add_command(label="Select/change FSL path", command=self.select_fsl_manually)
         app_menu.add_separator()
-        app_menu.add_command(label="Referencer", command=self.open_references_file)
+        app_menu.add_command(label="Licences and creddit", command=self.show_third_party_dependencies)
         app_menu.add_separator()
         app_menu.add_command(label="Exit", command=self.request_exit)
         menubar.add_cascade(label="App", menu=app_menu)
 
         self.config(menu=menubar)
+
+    def show_third_party_dependencies(self) -> None:
+        """
+        Visar tredjepartsberoenden, licenser och acknowledgements i ett eget fönster.
+        """
+
+        window = tk.Toplevel(self)
+        window.title("Third-party dependencies, licences and acknowledgements")
+        window.geometry("900x650")
+        window.minsize(650, 400)
+        window.transient(self)
+
+        outer = ttk.Frame(window, padding=10)
+        outer.pack(fill="both", expand=True)
+
+        text_frame = ttk.Frame(outer)
+        text_frame.pack(fill="both", expand=True)
+        text_frame.rowconfigure(0, weight=1)
+        text_frame.columnconfigure(0, weight=1)
+
+        text_widget = tk.Text(
+            text_frame,
+            wrap="word",
+            width=100,
+            height=32,
+            font=("TkFixedFont", 10),
+        )
+        scrollbar = ttk.Scrollbar(
+            text_frame,
+            orient="vertical",
+            command=text_widget.yview,
+        )
+        text_widget.configure(yscrollcommand=scrollbar.set)
+
+        text_widget.grid(row=0, column=0, sticky="nsew")
+        scrollbar.grid(row=0, column=1, sticky="ns")
+
+        text_widget.insert("1.0", THIRD_PARTY_DEPENDENCIES_TEXT)
+        text_widget.configure(state="disabled")
+
+        button_frame = ttk.Frame(outer)
+        button_frame.pack(fill="x", pady=(10, 0))
+
+        def copy_to_clipboard() -> None:
+            window.clipboard_clear()
+            window.clipboard_append(THIRD_PARTY_DEPENDENCIES_TEXT)
+
+        ttk.Button(
+            button_frame,
+            text="Copy all",
+            command=copy_to_clipboard,
+        ).pack(side="left")
+
+        ttk.Button(
+            button_frame,
+            text="Close",
+            command=window.destroy,
+        ).pack(side="right")
+
+        text_widget.focus_set()
 
     def open_references_file(self) -> None:
         """
