@@ -19,7 +19,7 @@ add anaconda path
 
 PYinstaller:
 
-Manfred: (Se till att allt är som i kopierade)
+Manfred: 
 pyinstaller --collect-datas bidsschematools --add-data "/opt/anaconda3/envs/BIDS_and_coreg/lib/python3.14/site-packages/ci_info/vendors.json:ci_info" --collect-datas etelemetry --add-binary "/opt/anaconda3/envs/BIDS_and_coreg/bin/dcm2niix:." --onedir --windowed --clean --name "Bids_and_coreg" --icon=Prel_BIDS_icon.ico main.py
 Kopierad:
 pyinstaller \
