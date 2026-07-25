@@ -2,15 +2,15 @@
 
 **Compatibility**
 This program is built using python 3.14.2
-Using it, or the executeble through a terminal with a 
+Using it, or the executeble through a terminal, with a 
 different version might cause problems.
 
 ubunty 22.04
 
 
 **Using the program**
-In this project you will find a foldder named APP, and inside different versions
-of the app version of this program can be fund. 
+In this project you will find a foldder named APP, and inside different 
+app version of this program can be fund. 
 Under each opperating system folder there is a "dist", and inside is the app.
 
 The program will open on the coregistration page. To switch pages, open the "Mode" 

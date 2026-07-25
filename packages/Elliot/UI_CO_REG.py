@@ -93,11 +93,12 @@ Third-party dependencies, licences and acknowledgements
 
 This aplication was made by:
 
-Elliot Stralje      -       eliot@stralje.com 
-Sofia Remle         -       sofia.rem2004@gmail.com
-Manfred Engström    -       manfred@engstroom.se 
+Elliot Stralje          -       eliot@stralje.com 
+Sofia Remle             -       sofia.rem2004@gmail.com
+Manfred Engström        -       manfred@engstroom.se 
 
 =============================================================================
+
 
 This application is packaged with Python and several third-party Python
 packages. FSL is NOT packaged with the application.
@@ -118,6 +119,31 @@ https://docs.python.org/3/license.html
 
 Packaged third-party Python packages
 ------------------------------------
+
+pydicom
+-------
+Used to read and handle dicom files and data format.
+pydicom uses a MIT license
+
+dcm2niix
+--------
+Used to convert files in dicom format to nifti files and BIDS sidcar metadata files
+
+View github page for full list of contributors and further info:
+https://github.com/rordenlab/dcm2niix/graphs/contributors?from=4%2F25%2F2026
+
+License:
+https://github.com/rordenlab/dcm2niix/blob/master/license.txt
+
+
+pigz
+----
+Used through dcm2niix to compress files.
+pigz uses a version of the MIT license.
+
+License:
+https://pypi.org/project/pigz/
+
 
 NumPy
 -----
@@ -161,20 +187,6 @@ processing framework in Python. Frontiers in Neuroinformatics, 5, 13.
 https://doi.org/10.3389/fninf.2011.00013
 
 
-Deno
---------
-Used as a JavaScript/TypeScript runtime and/or command-line tool in the
-project.
-
-Deno is licensed under the MIT licence.
-
-Deno website:
-https://deno.com/
-
-Deno licence:
-https://github.com/denoland/deno/blob/main/LICENSE.md
-
-
 openpyxl
 --------
 Used for writing Excel files with coregistration similarity metrics.
@@ -201,6 +213,11 @@ FSL licence:
 https://fsl.fmrib.ox.ac.uk/fsl/docs/license.html
 
 
+pillow
+------
+Used to read the app icon (.ico) file during packaging.
+Uses a MIT-CMU license
+
 Internal/local project module
 -----------------------------
 
@@ -213,9 +230,35 @@ Distribution note
 - NumPy
 - NiBabel
 - Nipype
-- Deno
 - openpyxl
 - any other dependencies that are bundled automatically during packaging
+
+
+Notices:
+--------
+
+dcm2niix:
+"THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
+
+MIT:
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+IN THE SOFTWARE.
+
+
 
 ============================================================================="""
 
